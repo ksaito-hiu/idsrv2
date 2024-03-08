@@ -1,0 +1,13 @@
+{
+  "@context": [
+    "https://linkedsoftwaredependencies.org/bundles/npm/@solid/community-server/^7.0.0/components/context.jsonld"
+  ],
+  "@graph": [
+    {
+      "comment": [
+        "css:config/oidc.jsonをベースにカスタマイズするためのComponent.js設定ファイル。",
+        "現在はまだ空。"
+      ]
+    }
+  ]
+}

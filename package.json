@@ -1,0 +1,37 @@
+{
+  "name": "idsrv2",
+  "version": "0.0.0",
+  "description": "A Solid OIDC authentication server appropriating google accounts for authentication.",
+  "main": "index.js",
+  "scripts": {
+    "start": "community-solid-server -c @css:config/oidc.json idsrv2.json -f data -m .",
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ksaito-hiu/idsrv2.git"
+  },
+  "keywords": [
+    "Solid",
+    "Authentication",
+    "OpenID",
+    "Connect"
+  ],
+  "author": "Kenji Saito",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ksaito-hiu/idsrv2/issues"
+  },
+  "homepage": "https://github.com/ksaito-hiu/idsrv2#readme",
+  "dependencies": {
+    "@solid/community-server": "^7.0.4"
+  },
+  "devDependencies": {
+    "@tsconfig/node18": "^18.2.2",
+    "@types/jest": "^29.5.12",
+    "componentsjs-generator": "^4.0.1",
+    "jest": "^29.7.0",
+    "ts-jest": "^29.1.2",
+    "typescript": "^5.4.2"
+  }
+}
