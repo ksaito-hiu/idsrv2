@@ -40,5 +40,5 @@ cd $INSTALL_DIR
 #export MONGODB_URI='mongodb://127.0.0.1:27017'
 
 npx community-solid-server -c @css:config/oidc.json idsrv2.json -f data -m . --baseUrl https://s314.ks1.org/
-node src/app.js
+#node src/app.js
 
