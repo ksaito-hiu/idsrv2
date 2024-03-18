@@ -1,12 +1,32 @@
 {
   "name": "idsrv2",
-  "version": "0.0.0",
+  "version": "1.0.1",
   "description": "A Solid OIDC authentication server appropriating google accounts for authentication.",
-  "main": "index.js",
-  "scripts": {
-    "start": "community-solid-server -c @css:config/oidc.json idsrv2.json -f data -m .",
-    "test": "jest"
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "lsd:module": "https://linkedsoftwaredependencies.org/bundles/npm/idsrv2",
+  "lsd:components": "dist/components/components.jsonld",
+  "lsd:contexts": {
+    "https://linkedsoftwaredependencies.org/bundles/npm/idsrv2/^1.0.0/components/context.jsonld": "dist/components/context.jsonld"
   },
+  "lsd:importPaths": {
+    "https://linkedsoftwaredependencies.org/bundles/npm/idsrv2/^1.0.0/components/": "dist/components/",
+    "https://linkedsoftwaredependencies.org/bundles/npm/idsrv2/^1.0.0/config/": "config/",
+    "https://linkedsoftwaredependencies.org/bundles/npm/idsrv2/^1.0.0/dist/": "dist/"
+  },
+  "scripts": {
+    "build": "npm run build:ts && npm run build:components",
+    "build:components": "componentsjs-generator -s src -c dist/components -i .componentsignore -r idsrv2",
+    "build:ts": "tsc",
+    "prepare": "npm run build",
+    "start": "community-solid-server -c @css:config/oidc.json idsrv2.json -f data -m .",
+    "test": "jest",
+    "clean": "rm -fr node_modules; rm -fr data; rm -fr dist"
+  },
+  "files": [
+    "dist",
+    "config"
+  ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/ksaito-hiu/idsrv2.git"

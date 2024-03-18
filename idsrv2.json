@@ -1,12 +1,23 @@
 {
   "@context": [
-    "https://linkedsoftwaredependencies.org/bundles/npm/@solid/community-server/^7.0.0/components/context.jsonld"
+    "https://linkedsoftwaredependencies.org/bundles/npm/@solid/community-server/^7.0.0/components/context.jsonld",
+    "https://linkedsoftwaredependencies.org/bundles/npm/idsrv2/^1.0.0/components/context.jsonld"
+  ],
+  "import": [
+    "idsrv2:config/hello-world.json"
   ],
   "@graph": [
     {
       "comment": [
         "css:config/oidc.jsonをベースにカスタマイズするためのComponent.js設定ファイル。",
-        "現在はまだ空。"
+        "現在はまだテスト。"
+      ]
+    },
+    {
+      "@id": "urn:solid-server:default:PrimaryParallelInitializer",
+      "@type": "ParallelHandler",
+      "handlers": [
+        { "@id" : "urn:idsrv2:core:HelloWorld" }
       ]
     }
   ]
