@@ -3,22 +3,22 @@
     "https://linkedsoftwaredependencies.org/bundles/npm/@solid/community-server/^7.0.0/components/context.jsonld",
     "https://linkedsoftwaredependencies.org/bundles/npm/idsrv2/^1.0.0/components/context.jsonld"
   ],
-  "import": [
-    "idsrv2:config/hello-world.json",
-    "idsrv2:config/google-auth.json"
-  ],
   "@graph": [
     {
-      "comment": [
-        "css:config/oidc.jsonをベースにカスタマイズするためのComponent.js設定ファイル。",
-        "現在はまだテスト。"
-      ]
+      "comment": "Enable Google OIDC Authentication.",
+    },
+    {
+      "@id": "urn:idsrv2:core:GoogleOIDC",
+      "@type": "GoogleOIDC",
+      "g_route": { "@id": "urn:solid-server:default:AccountRoute" },
+      "c_id": "this parameter will be overrided by idsrv2-config.json.",
+      "c_secret": "this parameter will be overrided by idsrv2-config.json."
     },
     {
       "@id": "urn:solid-server:default:PrimaryParallelInitializer",
       "@type": "ParallelHandler",
       "handlers": [
-        { "@id" : "urn:idsrv2:core:HelloWorld" }
+        { "@id" : "urn:idsrv2:core:GoogleOIDC" }
       ]
     }
   ]

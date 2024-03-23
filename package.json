@@ -19,7 +19,7 @@
     "build:components": "componentsjs-generator -s src -c dist/components -i .componentsignore -r idsrv2",
     "build:ts": "tsc",
     "prepare": "npm run build",
-    "start": "community-solid-server -c @css:config/oidc.json idsrv2.json -f data -m .",
+    "start": "community-solid-server -c @css:config/oidc.json idsrv2.json idsrv2-config.json -f data -m .",
     "test": "jest",
     "clean": "rm -fr node_modules; rm -fr data; rm -fr dist"
   },
@@ -44,7 +44,8 @@
   },
   "homepage": "https://github.com/ksaito-hiu/idsrv2#readme",
   "dependencies": {
-    "@solid/community-server": "^7.0.4"
+    "@solid/community-server": "^7.0.4",
+    "openid-client": "^5.6.5"
   },
   "devDependencies": {
     "@tsconfig/node18": "^18.2.2",
