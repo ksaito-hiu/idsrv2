@@ -12,7 +12,7 @@
       ]
     },
     {
-      "@id": "urn:idsrv2:core:MyOverride",
+      "@id": "urn:idsrv2:core:MyOverride1",
       "@type": "Override",
       "overrideInstance": { "@id": "urn:idsrv2:core:GoogleOIDC" },
       "overrideSteps": [

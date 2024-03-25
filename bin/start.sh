@@ -38,7 +38,8 @@ INSTALL_DIR=`echo $INSTALL_DIR | sed -e 's/\/bin//'`
 cd $INSTALL_DIR
 
 #export MONGODB_URI='mongodb://127.0.0.1:27017'
+#export CSS_BASE_URL='https://id.mydomain.com/'
 
-npx community-solid-server -c @css:config/oidc.json idsrv2.json -f data -m . --baseUrl https://s314.ks1.org/
+npx community-solid-server -c @css:config/oidc.json idsrv2.json idsrv2-config.json -f data -m .
 #node src/app.js
 
