@@ -1,11 +1,12 @@
 {
   "@context": [
     "https://linkedsoftwaredependencies.org/bundles/npm/@solid/community-server/^7.0.0/components/context.jsonld",
+    "https://linkedsoftwaredependencies.org/bundles/npm/css-google-auth/^1.0.0/components/context.jsonld",
     "https://linkedsoftwaredependencies.org/bundles/npm/idsrv2/^1.0.0/components/context.jsonld"
   ],
   "import": [
-    "idsrv2:config/hello-world.json",
-    "idsrv2:config/google-auth.json"
+    "cga:config/google-auth.json",
+    "idsrv2:config/hello-world.json"
   ],
   "@graph": [
     {
