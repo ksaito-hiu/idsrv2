@@ -40,6 +40,10 @@ cd $INSTALL_DIR
 #export MONGODB_URI='mongodb://127.0.0.1:27017'
 #export CSS_BASE_URL='https://id.mydomain.com/'
 
-npx community-solid-server -c @css:config/oidc.json idsrv2.json idsrv2-config.json -f data -m .
+if [ -z $CSS_BASE_URL ]; then
+    CSS_BASE_URL='http://localhost:3000/'
+fi
+
+npx community-solid-server -b $CSS_BASE_URL -c @css:config/oidc.json idsrv2.json idsrv2-config.json -f data -m .
 #node src/app.js
 
