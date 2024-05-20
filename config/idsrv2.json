@@ -5,8 +5,7 @@
     "https://linkedsoftwaredependencies.org/bundles/npm/idsrv2/^1.0.0/components/context.jsonld"
   ],
   "import": [
-    "cga:config/google-auth.json",
-    "idsrv2:config/hello-world.json"
+    "cga:config/google-auth.json"
   ],
   "@graph": [
     {
@@ -16,11 +15,7 @@
       ]
     },
     {
-      "@id": "urn:solid-server:default:PrimaryParallelInitializer",
-      "@type": "ParallelHandler",
-      "handlers": [
-        { "@id" : "urn:idsrv2:core:HelloWorld" }
-      ]
-    }
+      "comment": "",
+    },
   ]
 }
