@@ -15,7 +15,25 @@
       ]
     },
     {
-      "comment": "",
+      "comment": "RegisterGoogleHandlerをオーバライドしてGoogleAuthFilterとPostGAccountGenを置き換える。",
+      "@type": "Override",
+      "overrideInstance": { "@id": "urn:cga:core:RegisterGoogleHandler" },
+      "overrideParameters": {
+        "@type": "RegisterGoogleHandler",
+        "googleOIDC": { "@id": "urn:cga:core:GoogleOIDC" },
+        "accountStore": { "@id": "urn:solid-server:default:AccountStore" },
+        "googleStore": { "@id": "urn:cga:core:GoogleStore" },
+        "gSessionStore": { "@id": "urn:cga:core:GSessionStore" },
+        "cookieStore": { "@id": "urn:solid-server:default:CookieStore" },
+        "googleAuthFilter": {
+          "@id": "urn:idsrv2:core:GoogleAuthFilter",
+          "@type": "HIUAuthFilter"
+        },
+        "postGAccountGen": {
+          "@id": "urn:idsrv2:core:PostGAccountGen",
+          "@type": "HIUPostGAccountGen"
+        },
+      }
     },
   ]
 }
