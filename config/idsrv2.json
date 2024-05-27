@@ -15,6 +15,16 @@
       ]
     },
     {
+      "comment": "Googleアカウントのフィルタ",
+      "@id": "urn:idsrv2:core:GoogleAuthFilter",
+      "@type": "HIUAuthFilter"
+    },
+    {
+      "comment": "Googleアカウント追加後の処理",
+      "@id": "urn:idsrv2:core:PostGAccountGen",
+      "@type": "HIUPostGAccountGen"
+    },
+    {
       "comment": "RegisterGoogleHandlerをオーバライドしてGoogleAuthFilterとPostGAccountGenを置き換える。",
       "@type": "Override",
       "overrideInstance": { "@id": "urn:cga:core:RegisterGoogleHandler" },
@@ -25,15 +35,23 @@
         "googleStore": { "@id": "urn:cga:core:GoogleStore" },
         "gSessionStore": { "@id": "urn:cga:core:GSessionStore" },
         "cookieStore": { "@id": "urn:solid-server:default:CookieStore" },
-        "googleAuthFilter": {
-          "@id": "urn:idsrv2:core:GoogleAuthFilter",
-          "@type": "HIUAuthFilter"
-        },
-        "postGAccountGen": {
-          "@id": "urn:idsrv2:core:PostGAccountGen",
-          "@type": "HIUPostGAccountGen"
-        },
+        "googleAuthFilter": { "@id": "urn:idsrv2:core:GoogleAuthFilter" },
+        "postGAccountGen": { "@id": "urn:idsrv2:core:PostGAccountGen" }
       }
     },
+    {
+      "comment": "CreateGoogleHandlerをオーバライドしてGoogleAuthFilterとPostGAccountGenを置き換える。",
+      "@type": "Override",
+      "overrideInstance": { "@id": "urn:cga:core:CreateGoogleHandler" },
+      "overrideParameters": {
+        "@type": "CreateGoogleHandler",
+        "googleOIDC": { "@id": "urn:cga:core:GoogleOIDC" },
+        "googleStore": { "@id": "urn:cga:core:GoogleStore" },
+        "googleRoute": { "@id": "urn:cga:core:GoogleIdRoute" },
+        "gSessionStore": { "@id": "urn:cga:core:GSessionStore" },
+        "googleAuthFilter": { "@id": "urn:idsrv2:core:GoogleAuthFilter" },
+        "postGAccountGen": { "@id": "urn:idsrv2:core:PostGAccountGen" }
+      }
+    }
   ]
 }
