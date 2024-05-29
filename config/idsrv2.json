@@ -22,7 +22,9 @@
     {
       "comment": "Googleアカウント追加後の処理",
       "@id": "urn:idsrv2:core:PostGAccountGen",
-      "@type": "HIUPostGAccountGen"
+      "@type": "HIUPostGAccountGen",
+      "webIdStore": { "@id": "urn:solid-server:default:WebIdStore" },
+      "webIdBase": "https://id.mydomain.com/people/"
     },
     {
       "comment": "RegisterGoogleHandlerをオーバライドしてGoogleAuthFilterとPostGAccountGenを置き換える。",
