@@ -31,6 +31,17 @@
         "@type": "HIUPostGAccountGen",
         "webIdBase": "https://id.mydomain.com/people/"
       }
+    },
+    {
+      "comment": "HIUProfileHandlerの設定を書き換える。",
+      "@id": "urn:idsrv2:core:MyOverride3",
+      "@type": "Override",
+      "overrideInstance": { "@id": "urn:idsrv2:core:HIUProfileHandler" },
+      "overrideParameters": {
+        "@type": "HIUProfileHandler",
+        "profileRoot": "https://id.mydomain.com/people/",
+        "issuerUrl": "https://id.mydomain.com/"
+      }
     }
   ]
 }

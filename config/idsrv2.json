@@ -54,6 +54,27 @@
         "googleAuthFilter": { "@id": "urn:idsrv2:core:GoogleAuthFilter" },
         "postGAccountGen": { "@id": "urn:idsrv2:core:PostGAccountGen" }
       }
+    },
+    {
+      "comment": "まずHIUProfileHandlerを生成。",
+      "@id": "urn:idsrv2:core:HIUProfileHandler",
+      "@type": "HIUProfileHandler",
+      "profileRoot": "https://id.mydomain.com/people/",
+      "issuerUrl": "https://id.mydomain.com/"
+    },
+    {
+      "comment": "上で作ったHIUProfileHandlerをWaterfallHandlerの配列に追加。",
+      "@id": "urn:idsrv2:core:Override1",
+      "@type": "Override",
+      "overrideInstance": { "@id": "urn:solid-server:default:BaseHttpHandler" },
+      "overrideSteps": [
+        {
+          "@type": "OverrideListInsertAfter",
+          "overrideParameter": { "@id": "WaterfallHandler:_handlers" },
+          "overrideTarget": { "@id": "urn:solid-server:default:StaticAssetHandler" },
+          "overrideValue": { "@id": "urn:idsrv2:core:HIUProfileHandler" }
+        }
+      ]
     }
   ]
 }
