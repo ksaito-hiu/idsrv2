@@ -12,49 +12,47 @@ export type HiuData = {
 const profileTemplate = `@prefix foaf: <http://xmlns.com/foaf/0.1/>.
 @prefix solid: <http://www.w3.org/ns/solid/terms#>.
 
-<>
-    a foaf:PersonalProfileDocument;
-    foaf:maker <WEB_ID_TEMPLATE>;
-    foaf:primaryTopic <WEB_ID_TEMPLATE>.
+<BASE_URL_TEMPLATEpeople/HIU_ID_TEMPLATE> a foaf:PersonalProfileDocument;
+    foaf:maker <#me>;
+    foaf:primaryTopic <#me>.
 
-<WEB_ID_TEMPLATE>
-    
-    solid:oidcIssuer <OIDC_ISSUER_TEMPLATE>;
-    a foaf:Person.
+<#me> a foaf:Person;
+    solid:oidcIssuer <BASE_URL_TEMPLATE>;
+    <http://www.w3.org/ns/pim/space#preferencesFile> <BASE_URL_TEMPLATEpeople/HIU_ID_TEMPLATEprefs.ttl>.
 `;
-const regex1 = /WEB_ID_TEMPLATE/g;
-const regex2 = /OIDC_ISSUER_TEMPLATE/g;
-const hiuIdRegexp = /\/people\/[sf]\d{9}/;
+const regex1 = /BASE_URL_TEMPLATE/g;
+const regex2 = /HIU_ID_TEMPLATE/g;
+const profilePathRegexp = /^\/people\/[sf]\d{9}$/;
+const preferencesPathRegexp = /^\/people\/[sf]\d{9}prefs.ttl$/;
 
 /* 北海道情報大での使用を前提にしたWebIDのプロファイル情報を配信するHttpHandler */
 export class HIUProfileHandler extends HttpHandler {
-  private readonly profileRoot: string;
-  private readonly issuerUrl: string;
+  private readonly baseUrl: string;
   private readonly hiuStorage: JsonResourceStorage<HiuData>;
 
-  public constructor(profileRoot: string, issuerUrl: string, hiuStorage: JsonResourceStorage<HiuData>) {
+  public constructor(baseUrl: string, hiuStorage: JsonResourceStorage<HiuData>) {
     super();
-    this.profileRoot = profileRoot;
-    this.issuerUrl = issuerUrl;
+    this.baseUrl = baseUrl.endsWith('/') ? baseUrl : baseUrl+'/';
     this.hiuStorage = hiuStorage;
   }
 
+  // hiuIdはsかfで始まる10文字の文字列と決まっている
   createHiuIdFromUrl(url: string): string {
 //console.log("GAHA: HIUProfileHandler#createHiuIdFromUrl: url=("+url+")");
-    if (url.length === 18) { // '/people/s202421000'.length === 18
-      const m = url.match(hiuIdRegexp);
-      if (m) {
-        return m[0].substring(8);
-      } else {
-        throw new Error('HIUProfileHandler: error1.');
-      }
+    const isProfileMatch = url.match(profilePathRegexp);
+    const isPreferencesMatch = url.match(preferencesPathRegexp);
+    if (isProfileMatch) {
+      return isProfileMatch[0].substring(8,18);
+    } else if (isPreferencesMatch) {
+      return isPreferencesMatch[0].substring(8,18);
+    } else {
+      throw new Error('HIUProfileHandler: error.');
     }
-    throw new Error('HIUProfileHandler: error2.');
   }
 
   public async canHandle({ request }: HttpHandlerInput): Promise<void> {
-    if (request.method !== 'GET' && request.method !== 'HEAD') {
-      throw new NotImplementedHttpError('Only GET and HEAD requests are supported');
+    if (request.method !== 'GET' && request.method !== 'HEAD' && request.method !== 'OPTION') {
+      throw new NotImplementedHttpError('Only GET, HEAD and OPTION requests are supported');
     }
     if (request.url == undefined) {
       throw new Error('can not handle.');
@@ -72,12 +70,28 @@ export class HIUProfileHandler extends HttpHandler {
     if (request.url == undefined) {
       throw new Error('HIUProfileHandler: 404?');
     }
-    const id = this.createHiuIdFromUrl(request.url);
-    const webId = this.profileRoot + id + '#me';
-    const bodyStr = profileTemplate.replace(regex1, webId).replace(regex2, this.issuerUrl);
-    response.writeHead(200, { 'content-type': 'text/tutle' });
-    response.write(bodyStr);
-    response.end();
+
+    // CORS(Cross-Origin Resource Sharing)
+    //const origin = request.headers['Origin'];
+    //if (origin)
+    //  response.setHeader('Access-Control-Allow-Origin', origin);
+    //else
+    //  response.setHeader('Access-Control-Allow-Origin', '*');
+
+    if (request.method === 'OPTION') {
+      response.writeHead(200);
+      response.end();
+    } else if (request.url.endsWith('prefs.ttl')) {
+      response.writeHead(200, { 'content-type': 'text/tutle' });
+      response.write('');
+      response.end();
+    } else {
+      const hiuId = this.createHiuIdFromUrl(request.url);
+      const bodyStr = profileTemplate.replace(regex1, this.baseUrl).replace(regex2, hiuId);
+      response.writeHead(200, { 'content-type': 'text/tutle' });
+      response.write(bodyStr);
+      response.end();
+    }
   }
 }
 

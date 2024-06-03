@@ -21,27 +21,6 @@
         "client_id": "たぶん半角71文字ぐらいの最後が.apps.googleusercontent.comで終る文字列",
         "client_secret": "たぶん半角24文字ぐらいの文字列"
       }
-    },
-    {
-      "comment": "WebIDをemailから生成するためのwebIdBase情報のオーバーライド。",
-      "@id": "urn:idsrv2:core:MyOverride2",
-      "@type": "Override",
-      "overrideInstance": { "@id": "urn:idsrv2:core:PostGAccountGen" },
-      "overrideParameters": {
-        "@type": "HIUPostGAccountGen",
-        "webIdBase": "https://id.mydomain.com/people/"
-      }
-    },
-    {
-      "comment": "HIUProfileHandlerの設定を書き換える。",
-      "@id": "urn:idsrv2:core:MyOverride3",
-      "@type": "Override",
-      "overrideInstance": { "@id": "urn:idsrv2:core:HIUProfileHandler" },
-      "overrideParameters": {
-        "@type": "HIUProfileHandler",
-        "profileRoot": "https://id.mydomain.com/people/",
-        "issuerUrl": "https://id.mydomain.com/"
-      }
     }
   ]
 }

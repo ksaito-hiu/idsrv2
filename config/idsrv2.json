@@ -20,7 +20,7 @@
       "@type": "JsonResourceStorage",
       "source": { "@id": "urn:solid-server:default:ResourceStore" },
       "baseUrl": { "@id": "urn:solid-server:default:variable:baseUrl" },
-      "container": "./internal/hiu/"
+      "container": "./.internal/hiu/"
     },
     {
       "comment": "Googleアカウントのフィルタ",
@@ -32,7 +32,7 @@
       "@id": "urn:idsrv2:core:PostGAccountGen",
       "@type": "HIUPostGAccountGen",
       "webIdStore": { "@id": "urn:solid-server:default:WebIdStore" },
-      "webIdBase": "https://id.mydomain.com/people/",
+      "baseUrl": { "@id": "urn:solid-server:default:variable:baseUrl" },
       "hiuStorage": { "@id": "urn:idsrv2:core:HiuStorage" }
     },
     {
@@ -68,8 +68,7 @@
       "comment": "まずHIUProfileHandlerを生成。",
       "@id": "urn:idsrv2:core:HIUProfileHandler",
       "@type": "HIUProfileHandler",
-      "profileRoot": "https://id.mydomain.com/people/",
-      "issuerUrl": "https://id.mydomain.com/",
+      "baseUrl": { "@id": "urn:solid-server:default:variable:baseUrl" },
       "hiuStorage": { "@id": "urn:idsrv2:core:HiuStorage" }
     },
     {
@@ -81,7 +80,7 @@
         {
           "@type": "OverrideListInsertAfter",
           "overrideParameter": { "@id": "WaterfallHandler:_handlers" },
-          "overrideTarget": { "@id": "urn:solid-server:default:StaticAssetHandler" },
+          "overrideTarget": { "@id": "urn:solid-server:default:IdentityProviderHandler" },
           "overrideValue": { "@id": "urn:idsrv2:core:HIUProfileHandler" }
         }
       ]
