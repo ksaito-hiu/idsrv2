@@ -72,23 +72,29 @@ export class HIUProfileHandler extends HttpHandler {
     }
 
     // CORS(Cross-Origin Resource Sharing)
-    //const origin = request.headers['Origin'];
-    //if (origin)
-    //  response.setHeader('Access-Control-Allow-Origin', origin);
-    //else
-    //  response.setHeader('Access-Control-Allow-Origin', '*');
+    /*
+    const origin = request.headers['Origin'];
+    if (origin)
+      response.setHeader('Access-Control-Allow-Origin', origin);
+    else
+      response.setHeader('Access-Control-Allow-Origin', '*');
+    response.setHeader('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTION');
+    response.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, access_token');
+    response.setHeader('Access-Control-Allow-Credentials', 'true');
+    */
 
     if (request.method === 'OPTION') {
       response.writeHead(200);
       response.end();
     } else if (request.url.endsWith('prefs.ttl')) {
-      response.writeHead(200, { 'content-type': 'text/tutle' });
+      response.writeHead(200, { 'Content-Type': 'text/turtle' });
       response.write('');
       response.end();
     } else {
       const hiuId = this.createHiuIdFromUrl(request.url);
       const bodyStr = profileTemplate.replace(regex1, this.baseUrl).replace(regex2, hiuId);
-      response.writeHead(200, { 'content-type': 'text/tutle' });
+      response.writeHead(200, { 'Content-Type': 'text/turtle' });
+
       response.write(bodyStr);
       response.end();
     }
