@@ -11,7 +11,7 @@ export class HIUPostGAccountGen implements PostGAccountGen {
   public constructor(webIdStore: WebIdStore, baseUrl: string, hiuStorage: JsonResourceStorage<HiuData>) {
     this.webIdStore = webIdStore;
     this.baseUrl = baseUrl.endsWith('/') ? baseUrl : baseUrl+'/';
-console.log('GAHA: HIUAuthFilter, baseUrl=',this.baseUrl);
+console.log('GAHA: HIUPostGAccountGen, baseUrl=',this.baseUrl);
     this.hiuStorage = hiuStorage;
   }
 
@@ -22,7 +22,7 @@ console.log('GAHA: HIUAuthFilter, baseUrl=',this.baseUrl);
         hiuId: "s20"+email.substring(1,8)
       };
     } else if (email.endsWith('@do-johodai.ac.jp')) {
-console.log('GAHA: HIUAuthFilter, email=',email);
+console.log('GAHA: HIUPostGAccountGen, email=',email);
       // ちょっと自分だけ前提でテスト
       return {
         webId: this.baseUrl+'people/f200088071#me',

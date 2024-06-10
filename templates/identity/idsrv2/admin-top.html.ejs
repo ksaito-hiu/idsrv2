@@ -1,0 +1,13 @@
+<h1>Admin Top</h1>
+
+<button id="test_btn">test</button>
+
+<script>
+  (async() => {
+    let controls = await fetchControls('<%= idpIndex %>');
+    function test(e) {
+      alert('test!');
+    }
+    document.querySelector('#test_btn').addEventListener('click',test);
+  })();
+</script>

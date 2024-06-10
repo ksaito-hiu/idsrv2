@@ -2,7 +2,6 @@ import { GoogleAuthFilter } from 'css-google-auth';
 
 export class HIUAuthFilter implements GoogleAuthFilter {
   async check(tokenSet: any): Promise<void> {
-console.log('GAHA: ',tokenSet);
     const email = tokenSet.claims().email;
     if (email.endsWith('@s.do-johodai.ac.jp')) {
       console.log('HIUAuthFilter: student email=',email);

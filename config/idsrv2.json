@@ -65,6 +65,13 @@
       }
     },
     {
+      "comment": [
+        "GoogleAuthFilterとPostGAccountGenの設定はここまで。**********************************",
+        "以下はWebIDのURLでプロファイルのTurtleを自動生成するHIUProfileHandlerの設定。",
+        "HIUProfileHandlerのルーティングはHIUProfileHandler#canHandleメソッドで行われる感じ。"
+      ]
+    },
+    {
       "comment": "まずHIUProfileHandlerを生成。",
       "@id": "urn:idsrv2:core:HIUProfileHandler",
       "@type": "HIUProfileHandler",
@@ -85,5 +92,115 @@
         }
       ]
     },
+    {
+      "comment": "以下管理機能の設定。*****************************************************",
+    },
+    {
+      "comment": "管理機能のAPIを処理するHIUAdminHandlerを生成。adminWebIdsはダミー。",
+      "@id": "urn:idsrv2:core:HIUAdminHandler",
+      "@type": "HIUAdminHandler",
+      "hiuStorage": { "@id": "urn:idsrv2:core:HiuStorage" },
+      "webIdStore": { "@id": "urn:solid-server:default:WebIdStore" },
+      "googleStore": { "@id": "urn:cga:core:GoogleStore" },
+      "adminWebIds": [
+        "https://id.mydomain.com/people/f123456789#me"
+      ]
+    },
+    {
+      "comment": "上のHIUAdminHandlerのルーティングを設定する。",
+      "@id": "urn:idsrv2:core:Idsrv2AdminRouter",
+      "@type": "InteractionRouteHandler",
+      "route": {
+        "@id": "urn:idsrv2:core:Idsrv2AdminRoute",
+        "@type": "RelativePathInteractionRoute",
+        "base": {
+          "@id": "urn:idsrv2:core:Idsrv2Route",
+          "@type": "RelativePathInteractionRoute",
+          "base": { "@id": "urn:solid-server:default:IndexRoute" },
+          "relativePath": "idsrv2/"
+        },
+        "relativePath": "admin/"
+      },
+      "source": { "@id": "urn:idsrv2:core:HIUAdminHandler" }
+    },
+    {
+      "@id": "urn:solid-server:default:InteractionRouteHandler",
+      "@type": "WaterfallHandler",
+      "handlers": [{ "@id": "urn:idsrv2:core:Idsrv2AdminRouter" }]
+    },
+    {
+      "comment": "以下テンプレートなどHTMLの実装を生成。*****************************************************",
+    },
+    {
+      "comment": "管理画面用テンプレートを作って追加。",
+      "@id": "urn:solid-server:default:HtmlViewHandler",
+      "@type": "HtmlViewHandler",
+      "templates": [{
+        "@id": "urn:idsrv2:core:Idsrv2AdminHtml",
+        "@type": "HtmlViewEntry",
+        "filePath": "templates/identity/idsrv2/admin-top.html.ejs",
+        "route": { "@id": "urn:idsrv2:core:Idsrv2AdminRoute" }
+      }]
+    },
+    {
+      "comment": "idsrv2のトップページのHTML。",
+      "@type": "Override",
+      "overrideInstance": { "@id": "urn:solid-server:default:RootStaticAsset" },
+      "overrideParameters": {
+        "@type": "StaticAssetEntry",
+        "filePath": "templates/root/static/idsrv2-top.html"
+      }
+    },
+    {
+      "comment": "以下コントロール(controls)の設定。*****************************************************",
+    },
+    { "comment": "コントロールのトップ(control)にidsrv2を追加",
+      "@id": "urn:solid-server:default:ControlHandler",
+      "@type": "ControlHandler",
+      "controls": [
+        {
+          "ControlHandler:_controls_key": "idsrv2",
+          "ControlHandler:_controls_value": {
+            "comment": "All controls associated with the idsrv2.",
+            "@id": "urn:idsrv2:core:Idsrv2ControlHandler",
+            "@type": "ControlHandler",
+            "controls": []
+          }
+        }
+      ]
+    },
+    { "comment": "Adding the necessary controls(idsrvコントロールの中にadminを追加する)",
+      "@id": "urn:idsrv2:core:Idsrv2ControlHandler",
+      "@type": "ControlHandler",
+      "controls": [{
+        "ControlHandler:_controls_key": "admin",
+        "ControlHandler:_controls_value": { "@id": "urn:idsrv2:core:Idsrv2AdminRoute" }
+      }]
+    },
+    { "comment": "コントロールのcontrol.htmlにidsrv2を追加",
+      "@id": "urn:solid-server:default:HtmlControlHandler",
+      "@type": "ControlHandler",
+      "controls": [
+        {
+          "ControlHandler:_controls_key": "idsrv2",
+          "ControlHandler:_controls_value": {
+            "comment": "All controls associated with the idsrv2.",
+            "@id": "urn:idsrv2:core:Idsrv2HtmlControlHandler",
+            "@type": "ControlHandler",
+            "controls": []
+          }
+        }
+      ]
+    },
+    { "comment": "Adding HTML(admin-topのHTMLをコントロール(controls.html.idsrv2)の所に追加)",
+      "ControlHandler:_controls_value": {
+        "@id": "urn:idsrv2:core:Idsrv2HtmlControlHandler",
+        "@type": "ControlHandler",
+        "controls": [{
+          "ControlHandler:_controls_key": "admin",
+          "ControlHandler:_controls_value": { "@id": "urn:idsrv2:core:Idsrv2AdminRoute" }
+        }]
+      }
+    }
   ]
 }

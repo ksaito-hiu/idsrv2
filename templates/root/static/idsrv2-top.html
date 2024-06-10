@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Community Solid Server</title>
+  <link rel="stylesheet" href="/.well-known/css/styles/main.css" type="text/css">
+</head>
+<body>
+  <header>
+    <a href=".."><img src="/.well-known/css/images/solid.svg" alt="[Solid logo]" /></a>
+    <h1>idsrv2</h1>
+  </header>
+  <main>
+    <h1>idsrv2</h1>
+    <p>
+      北海道情報大学のためのSolid認証サーバです。利用を開始する前に一度だけ大学のGmailアカウントで
+      「ユーザ登録」をして下さい。ユーザ登録後は、通常はこのページから直接ログインする必要は
+      ありません。以下のログイン・ログアウトのリンクはユーザ登録が上手くいったかどうかの
+      確認用だと思って下さい。
+    </p>
+
+    <ul>
+      <li><a id="regist_link" href="">ユーザ登録</a></li>
+      <li><a id="login_link" href="">ローカルログイン</a></li>
+      <li><a id="logout_link" href="">ローカルログアウト</a></li>
+      <li><a id="account_link" href="">アカウント情報</a></li>
+    </ul>
+  </main>
+</body>
+<script>
+  (async() => {
+    // Since this page is in the root of the server, we can determine other URLs relative to the current URL
+    const res = await fetch('.account/');
+    const controls = (await res.json())?.controls;
+    const registrationUrl = controls?.html?.google?.register;
+    const loginUrl = controls?.html?.google?.login;
+    const logoutUrl = controls?.account?.logout;
+    const accountUrl = controls?.html?.account?.account;
+    document.querySelector('#regist_link').setAttribute('href',registrationUrl);
+    document.querySelector('#login_link').setAttribute('href',loginUrl);
+    document.querySelector('#logout_link').setAttribute('href',logoutUrl);
+    document.querySelector('#account_link').setAttribute('href',accountUrl);
+  })();
+</script>
+</html>

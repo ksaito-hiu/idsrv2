@@ -1,7 +1,7 @@
 import { HttpHandler } from '@solid/community-server';
 import { HttpHandlerInput } from '@solid/community-server';
 import { NotImplementedHttpError } from '@solid/community-server';
-import { JsonResourceStorage } from '@solid/community-server';
+import { KeyValueStorage } from '@solid/community-server';
 
 export type HiuData = {
   hiuId: string, // 北海道情報大学の学籍番号、教職員番号を拡張したやつ
@@ -28,9 +28,9 @@ const preferencesPathRegexp = /^\/people\/[sf]\d{9}prefs.ttl$/;
 /* 北海道情報大での使用を前提にしたWebIDのプロファイル情報を配信するHttpHandler */
 export class HIUProfileHandler extends HttpHandler {
   private readonly baseUrl: string;
-  private readonly hiuStorage: JsonResourceStorage<HiuData>;
+  private readonly hiuStorage: KeyValueStorage<string,HiuData>;
 
-  public constructor(baseUrl: string, hiuStorage: JsonResourceStorage<HiuData>) {
+  public constructor(baseUrl: string, hiuStorage: KeyValueStorage<string,HiuData>) {
     super();
     this.baseUrl = baseUrl.endsWith('/') ? baseUrl : baseUrl+'/';
     this.hiuStorage = hiuStorage;
