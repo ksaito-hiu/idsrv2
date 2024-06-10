@@ -1,6 +1,8 @@
 import { object, string } from 'yup';
+import { validateWithError } from '@solid/community-server';
 import { JsonInteractionHandler } from '@solid/community-server';
 import { JsonInteractionHandlerInput } from '@solid/community-server';
+import { AccountStore } from '@solid/community-server';
 import { KeyValueStorage } from '@solid/community-server';
 import { WebIdStore } from '@solid/community-server';
 import { JsonRepresentation } from '@solid/community-server';
@@ -15,6 +17,8 @@ const inSchema = object({
 });
 
 export interface HIUAdminHandlerArgs {
+  baseUrl: string;
+  accountStore: AccountStore;
   hiuStorage: KeyValueStorage<string,HiuData>;
   webIdStore: WebIdStore;
   googleStore: GoogleStore;
@@ -23,6 +27,8 @@ export interface HIUAdminHandlerArgs {
 
 /* 北海道情報大の管理者用API */
 export class HIUAdminHandler extends JsonInteractionHandler {
+  private readonly baseUrl: string;
+  private readonly accountStore: AccountStore;
   private readonly hiuStorage: KeyValueStorage<string,HiuData>;
   private readonly webIdStore: WebIdStore;
   private readonly googleStore: GoogleStore;
@@ -30,6 +36,8 @@ export class HIUAdminHandler extends JsonInteractionHandler {
 
   public constructor(args: HIUAdminHandlerArgs) {
     super();
+    this.baseUrl = args.baseUrl;
+    this.accountStore = args.accountStore;
     this.hiuStorage = args.hiuStorage;
     this.webIdStore = args.webIdStore;
     this.googleStore = args.googleStore;
@@ -37,7 +45,7 @@ export class HIUAdminHandler extends JsonInteractionHandler {
     console.log("HIUAdminHandler GAHA0: this.adminWebIds=this.adminWebIds");
   }
 
-  public async canHandle(input: JsonInteractionHandlerInput): Promise<void> {
+  async checkPermission(input: JsonInteractionHandlerInput): Promise<void> {
     if (!input.accountId) {
       throw new Error('Login is required.');
     }
@@ -55,8 +63,26 @@ export class HIUAdminHandler extends JsonInteractionHandler {
     }
   }
 
+  public async canHandle(input: JsonInteractionHandlerInput): Promise<void> {
+    await this.checkPermission(input);
+  }
+
   public async handle(input: JsonInteractionHandlerInput): Promise<JsonRepresentation<OutType>> {
-    return { json: { output: 'abc' } };
+    await this.checkPermission(input);
+    const { kind, data } = await validateWithError(inSchema, input.json);
+    if (kind === 'addAccount') {
+      const [googleSub,hiuId] = data.split(',')
+      const accountId = await this.accountStore.create();
+      const googleId = await this.googleStore.create(googleSub, accountId); // ダブリチェックあり
+      const webId = this.baseUrl + 'people/' + hiuId + '#me';
+      const widIdId = await this.webIdStore.create(webId, accountId);
+      await this.hiuStorage.set(hiuId, {hiuId, accountId, googleId});
+      return { json: { output: 'ok,accountId='+accountId+',googleId='+googleId+',' } };
+    } else if (kind === 'dummy') {
+      return { json: { output: 'dummy' } };
+    } else {
+      return { json: { output: 'no kind error' } };
+    }
   }
 }
 

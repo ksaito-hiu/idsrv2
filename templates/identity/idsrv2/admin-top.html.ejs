@@ -1,13 +1,32 @@
 <h1>Admin Top</h1>
 
-<button id="test_btn">test</button>
+<div>
+
+  <h2>アカウント追加</h2>
+
+  <p>google_sub:<input id="google_sub" type="text"></p>
+  <p>hiu_id:<input id="hiu_id" type="text"></p>
+
+  <button id="add_account_btn">アカウント追加</button>
+
+</div>
 
 <script>
   (async() => {
     let controls = await fetchControls('<%= idpIndex %>');
-    function test(e) {
-      alert('test!');
+
+    async function addAccount(e) {
+      const google_sub = document.querySelector('#google_sub').value;
+      const hiu_id = document.querySelector('#hiu_id').value;
+        const data = { 'kind': 'addAccount', 'data': google_sub+','+hiu_id };
+      const res = await fetch(controls.idsrv2.admin,{
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json'},
+        body: JSON.stringify(data)
+      });
+      const j = await res.json();
+console.log('GAHA: ',j);
     }
-    document.querySelector('#test_btn').addEventListener('click',test);
+    document.querySelector('#add_account_btn').addEventListener('click',addAccount);
   })();
 </script>

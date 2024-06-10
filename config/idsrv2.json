@@ -99,6 +99,8 @@
       "comment": "管理機能のAPIを処理するHIUAdminHandlerを生成。adminWebIdsはダミー。",
       "@id": "urn:idsrv2:core:HIUAdminHandler",
       "@type": "HIUAdminHandler",
+      "baseUrl": { "@id": "urn:solid-server:default:variable:baseUrl" },
+      "accountStore": { "@id": "urn:solid-server:default:AccountStore" },
       "hiuStorage": { "@id": "urn:idsrv2:core:HiuStorage" },
       "webIdStore": { "@id": "urn:solid-server:default:WebIdStore" },
       "googleStore": { "@id": "urn:cga:core:GoogleStore" },
