@@ -1,7 +1,12 @@
 {
   "comment": "idsrv2の設定ファイル",
   "profile_directory": "people",
-  "mail_filter_regex": "(@gmail\\.com$)|(@hotmail\\.com$)",
+  "mail_filter_regexp": "(@gmail\\.com$)|(@hotmail\\.com$)",
+  "mailToId": {
+    "comment": "replaceでメールアドレスをidsrv2Idにする引数。",
+    "arg1": "^(.*)@gmail\\.com$",
+    "arg2": "id-$1"
+  },
   "adminWebIds": [
     "https://id.mydomain.com/people/u000000001#me"
   ]

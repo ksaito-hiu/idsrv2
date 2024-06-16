@@ -47,7 +47,8 @@
       "@type": "Idsrv2PostGAccountGen",
       "webIdStore": { "@id": "urn:solid-server:default:WebIdStore" },
       "baseUrl": { "@id": "urn:solid-server:default:variable:baseUrl" },
-      "idsrv2Storage": { "@id": "urn:idsrv2:core:Idsrv2Storage" }
+      "idsrv2Storage": { "@id": "urn:idsrv2:core:Idsrv2Storage" },
+      "settings": { "@id": "urn:idsrv2:core:Idsrv2Settings" }
     },
     {
       "comment": "RegisterGoogleHandlerをオーバライドしてGoogleAuthFilterとPostGAccountGenを置き換える。",
@@ -90,7 +91,8 @@
       "@id": "urn:idsrv2:core:Idsrv2ProfileHandler",
       "@type": "Idsrv2ProfileHandler",
       "baseUrl": { "@id": "urn:solid-server:default:variable:baseUrl" },
-      "idsrv2Storage": { "@id": "urn:idsrv2:core:Idsrv2Storage" }
+      "idsrv2Storage": { "@id": "urn:idsrv2:core:Idsrv2Storage" },
+      "settings": { "@id": "urn:idsrv2:core:Idsrv2Settings" }
     },
     {
       "comment": "上で作ったIdsrv2ProfileHandlerをWaterfallHandlerの配列に追加。",

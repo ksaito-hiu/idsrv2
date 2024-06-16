@@ -2,37 +2,32 @@ import { PostGAccountGen } from 'css-google-auth';
 import type { WebIdStore } from '@solid/community-server';
 import type { JsonResourceStorage } from '@solid/community-server';
 import type { Idsrv2Data } from './Idsrv2ProfileHandler';
+import type { Idsrv2Settings } from '../../../Idsrv2Settings';
 
 export class Idsrv2PostGAccountGen implements PostGAccountGen {
   private readonly webIdStore: WebIdStore;
   private readonly baseUrl: string;
   private readonly idsrv2Storage: JsonResourceStorage<Idsrv2Data>;
+  private readonly settings: Idsrv2Settings;
 
-  public constructor(webIdStore: WebIdStore, baseUrl: string, idsrv2Storage: JsonResourceStorage<Idsrv2Data>) {
+  public constructor(webIdStore: WebIdStore, baseUrl: string, idsrv2Storage: JsonResourceStorage<Idsrv2Data>, settings: Idsrv2Settings) {
     this.webIdStore = webIdStore;
-    this.baseUrl = baseUrl.endsWith('/') ? baseUrl : baseUrl+'/';
+    this.baseUrl = baseUrl.endsWith('/') ? baseUrl.slice(0,-1) : baseUrl;
 console.log('GAHA: Idsrv2PostGAccountGen, baseUrl=',this.baseUrl);
     this.idsrv2Storage = idsrv2Storage;
+    this.settings = settings;
   }
 
   createIdsFromEMail(email: string) {
-    if (email.endsWith('@s.do-johodai.ac.jp')) {
-      return {
-        webId: this.baseUrl+"people/s20"+email.substring(1,8)+'#me',
-        idsrv2Id: "s20"+email.substring(1,8)
-      };
-    } else if (email.endsWith('@do-johodai.ac.jp')) {
-console.log('GAHA: Idsrv2PostGAccountGen, email=',email);
-      // ちょっと自分だけ前提でテスト
-      return {
-        webId: this.baseUrl+'people/f200088071#me',
-        idsrv2Id: 'f200088071'
-      };
-      //throw new Error('Idsrv2PostGAccountGen: only students can be registered automaticaly. Please ask an administorator. email='+email);
-    } else {
-      console.log('Idsrv2PostGAccountGen: invalid email=',email);
-      throw new Error('Idsrv2PostGAccountGen: invalid email='+email);
-    }
+    let idsrv2Id;
+    idsrv2Id = email.replace(this.settings.idsrv2.mailToId.arg1,this.settings.idsrv2.mailToId.arg2);
+if (email==="ksaito@do-johodai.ac.jp") idsrv2Id = "f200088071"; // 自分だけテスト
+    if (email === idsrv2Id)
+      throw new Error('Idsrv2PostGAccountGen: could not get idsrv2Id from email. email='+email);
+    return {
+      webId: this.baseUrl+"/"+this.settings.idsrv2.profile_directory+"/"+idsrv2Id+'#me',
+      idsrv2Id
+    };
   }
 
   async handle(accountId: string, googleId: string, tokenSet: any): Promise<void> {
