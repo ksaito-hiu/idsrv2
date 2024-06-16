@@ -7,7 +7,8 @@ import { KeyValueStorage } from '@solid/community-server';
 import { WebIdStore } from '@solid/community-server';
 import { JsonRepresentation } from '@solid/community-server';
 import { GoogleStore } from 'css-google-auth';
-import { HiuData } from './HIUProfileHandler';
+import { Idsrv2Data } from './Idsrv2ProfileHandler';
+import { Idsrv2Settings } from '../../../Idsrv2Settings';
 
 type OutType = { output: string };
 
@@ -16,33 +17,32 @@ const inSchema = object({
   data: string().trim().required() // 良くないけど汎用
 });
 
-export interface HIUAdminHandlerArgs {
+export interface Idsrv2AdminHandlerArgs {
   baseUrl: string;
   accountStore: AccountStore;
-  hiuStorage: KeyValueStorage<string,HiuData>;
+  idsrv2Storage: KeyValueStorage<string,Idsrv2Data>;
   webIdStore: WebIdStore;
   googleStore: GoogleStore;
-  adminWebIds: string[];
+  settings: Idsrv2Settings;
 }
 
 /* 北海道情報大の管理者用API */
-export class HIUAdminHandler extends JsonInteractionHandler {
+export class Idsrv2AdminHandler extends JsonInteractionHandler {
   private readonly baseUrl: string;
   private readonly accountStore: AccountStore;
-  private readonly hiuStorage: KeyValueStorage<string,HiuData>;
+  private readonly idsrv2Storage: KeyValueStorage<string,Idsrv2Data>;
   private readonly webIdStore: WebIdStore;
   private readonly googleStore: GoogleStore;
-  private readonly adminWebIds: string[];
+  private readonly settings: Idsrv2Settings;
 
-  public constructor(args: HIUAdminHandlerArgs) {
+  public constructor(args: Idsrv2AdminHandlerArgs) {
     super();
     this.baseUrl = args.baseUrl;
     this.accountStore = args.accountStore;
-    this.hiuStorage = args.hiuStorage;
+    this.idsrv2Storage = args.idsrv2Storage;
     this.webIdStore = args.webIdStore;
     this.googleStore = args.googleStore;
-    this.adminWebIds = args.adminWebIds;
-    console.log("HIUAdminHandler GAHA0: this.adminWebIds=this.adminWebIds");
+    this.settings = args.settings;
   }
 
   async checkPermission(input: JsonInteractionHandlerInput): Promise<void> {
@@ -52,7 +52,7 @@ export class HIUAdminHandler extends JsonInteractionHandler {
     const webIds = await this.webIdStore.findLinks(input.accountId);
     let check = false;
     webIds.forEach((id)=> {
-      this.adminWebIds.forEach((aid)=> {
+      this.settings.idsrv2.adminWebIds.forEach((aid)=> {
         if (id.webId === aid) {
           check = true;
         }
@@ -71,12 +71,12 @@ export class HIUAdminHandler extends JsonInteractionHandler {
     await this.checkPermission(input);
     const { kind, data } = await validateWithError(inSchema, input.json);
     if (kind === 'addAccount') {
-      const [googleSub,hiuId] = data.split(',')
+      const [googleSub,idsrv2Id] = data.split(',')
       const accountId = await this.accountStore.create();
       const googleId = await this.googleStore.create(googleSub, accountId); // ダブリチェックあり
-      const webId = this.baseUrl + 'people/' + hiuId + '#me';
+      const webId = this.baseUrl + 'people/' + idsrv2Id + '#me';
       const widIdId = await this.webIdStore.create(webId, accountId);
-      await this.hiuStorage.set(hiuId, {hiuId, accountId, googleId});
+      await this.idsrv2Storage.set(idsrv2Id, {idsrv2Id, accountId, googleId});
       return { json: { output: 'ok,accountId='+accountId+',googleId='+googleId+',' } };
     } else if (kind === 'dummy') {
       return { json: { output: 'dummy' } };

@@ -1,0 +1,8 @@
+{
+  "comment": "idsrv2の設定ファイル",
+  "profile_directory": "people",
+  "mail_filter_regex": "(@gmail\\.com$)|(@hotmail\\.com$)",
+  "adminWebIds": [
+    "https://id.mydomain.com/people/u000000001#me"
+  ]
+}

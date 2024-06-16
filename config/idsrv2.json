@@ -15,25 +15,39 @@
       ]
     },
     {
+      "comment": "設定ファイル(settingsフォルダの中のjsonファイル)を読み込み情報を保存するインスタンス",
+      "@id": "urn:idsrv2:core:Idsrv2Settings",
+      "@type": "Idsrv2Settings",
+    },
+    {
+      "comment": "上のIdsrv2Settingsが初期化されるように設定",
+      "@id": "urn:solid-server:default:PrimaryParallelInitializer",
+      "@type": "ParallelHandler",
+      "handlers": [
+        { "@id" : "urn:idsrv2:core:Idsrv2Settings" }
+      ]
+    },
+    {
       "comment": "北海道情報大学固有の情報を保存するためのJsonResourceStorage。",
-      "@id": "urn:idsrv2:core:HiuStorage",
+      "@id": "urn:idsrv2:core:Idsrv2Storage",
       "@type": "JsonResourceStorage",
       "source": { "@id": "urn:solid-server:default:ResourceStore" },
       "baseUrl": { "@id": "urn:solid-server:default:variable:baseUrl" },
-      "container": "./.internal/hiu/"
+      "container": "./.internal/idsrv2/"
     },
     {
       "comment": "Googleアカウントのフィルタ",
       "@id": "urn:idsrv2:core:GoogleAuthFilter",
-      "@type": "HIUAuthFilter"
+      "@type": "Idsrv2AuthFilter",
+      "settings": { "@id": "urn:idsrv2:core:Idsrv2Settings" }
     },
     {
       "comment": "Googleアカウント追加後の処理",
       "@id": "urn:idsrv2:core:PostGAccountGen",
-      "@type": "HIUPostGAccountGen",
+      "@type": "Idsrv2PostGAccountGen",
       "webIdStore": { "@id": "urn:solid-server:default:WebIdStore" },
       "baseUrl": { "@id": "urn:solid-server:default:variable:baseUrl" },
-      "hiuStorage": { "@id": "urn:idsrv2:core:HiuStorage" }
+      "idsrv2Storage": { "@id": "urn:idsrv2:core:Idsrv2Storage" }
     },
     {
       "comment": "RegisterGoogleHandlerをオーバライドしてGoogleAuthFilterとPostGAccountGenを置き換える。",
@@ -67,19 +81,19 @@
     {
       "comment": [
         "GoogleAuthFilterとPostGAccountGenの設定はここまで。**********************************",
-        "以下はWebIDのURLでプロファイルのTurtleを自動生成するHIUProfileHandlerの設定。",
-        "HIUProfileHandlerのルーティングはHIUProfileHandler#canHandleメソッドで行われる感じ。"
+        "以下はWebIDのURLでプロファイルのTurtleを自動生成するIdsrv2ProfileHandlerの設定。",
+        "Idsrv2ProfileHandlerのルーティングはIdsrv2ProfileHandler#canHandleメソッドで行われる感じ。"
       ]
     },
     {
-      "comment": "まずHIUProfileHandlerを生成。",
-      "@id": "urn:idsrv2:core:HIUProfileHandler",
-      "@type": "HIUProfileHandler",
+      "comment": "まずIdsrv2ProfileHandlerを生成。",
+      "@id": "urn:idsrv2:core:Idsrv2ProfileHandler",
+      "@type": "Idsrv2ProfileHandler",
       "baseUrl": { "@id": "urn:solid-server:default:variable:baseUrl" },
-      "hiuStorage": { "@id": "urn:idsrv2:core:HiuStorage" }
+      "idsrv2Storage": { "@id": "urn:idsrv2:core:Idsrv2Storage" }
     },
     {
-      "comment": "上で作ったHIUProfileHandlerをWaterfallHandlerの配列に追加。",
+      "comment": "上で作ったIdsrv2ProfileHandlerをWaterfallHandlerの配列に追加。",
       "@id": "urn:idsrv2:core:Override1",
       "@type": "Override",
       "overrideInstance": { "@id": "urn:solid-server:default:BaseHttpHandler" },
@@ -88,7 +102,7 @@
           "@type": "OverrideListInsertAfter",
           "overrideParameter": { "@id": "WaterfallHandler:_handlers" },
           "overrideTarget": { "@id": "urn:solid-server:default:IdentityProviderHandler" },
-          "overrideValue": { "@id": "urn:idsrv2:core:HIUProfileHandler" }
+          "overrideValue": { "@id": "urn:idsrv2:core:Idsrv2ProfileHandler" }
         }
       ]
     },
@@ -96,20 +110,18 @@
       "comment": "以下管理機能の設定。*****************************************************",
     },
     {
-      "comment": "管理機能のAPIを処理するHIUAdminHandlerを生成。adminWebIdsはダミー。",
-      "@id": "urn:idsrv2:core:HIUAdminHandler",
-      "@type": "HIUAdminHandler",
+      "comment": "管理機能のAPIを処理するIdsrv2AdminHandlerを生成。adminWebIdsはダミー。",
+      "@id": "urn:idsrv2:core:Idsrv2AdminHandler",
+      "@type": "Idsrv2AdminHandler",
       "baseUrl": { "@id": "urn:solid-server:default:variable:baseUrl" },
       "accountStore": { "@id": "urn:solid-server:default:AccountStore" },
-      "hiuStorage": { "@id": "urn:idsrv2:core:HiuStorage" },
+      "idsrv2Storage": { "@id": "urn:idsrv2:core:Idsrv2Storage" },
       "webIdStore": { "@id": "urn:solid-server:default:WebIdStore" },
       "googleStore": { "@id": "urn:cga:core:GoogleStore" },
-      "adminWebIds": [
-        "https://id.mydomain.com/people/f123456789#me"
-      ]
+      "settings": { "@id": "urn:idsrv2:core:Idsrv2Settings" }
     },
     {
-      "comment": "上のHIUAdminHandlerのルーティングを設定する。",
+      "comment": "上のIdsrv2AdminHandlerのルーティングを設定する。",
       "@id": "urn:idsrv2:core:Idsrv2AdminRouter",
       "@type": "InteractionRouteHandler",
       "route": {
@@ -123,7 +135,7 @@
         },
         "relativePath": "admin/"
       },
-      "source": { "@id": "urn:idsrv2:core:HIUAdminHandler" }
+      "source": { "@id": "urn:idsrv2:core:Idsrv2AdminHandler" }
     },
     {
       "@id": "urn:solid-server:default:InteractionRouteHandler",
