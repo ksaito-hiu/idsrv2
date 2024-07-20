@@ -21,6 +21,15 @@
         "client_id": "たぶん半角71文字ぐらいの最後が.apps.googleusercontent.comで終る文字列",
         "client_secret": "たぶん半角24文字ぐらいの文字列"
       }
+    },
+    {
+      "comment": "idsrv2のトップページのHTML。",
+      "@type": "Override",
+      "overrideInstance": { "@id": "urn:solid-server:default:RootStaticAsset" },
+      "overrideParameters": {
+        "@type": "StaticAssetEntry",
+        "filePath": "templates/root/static/idsrv2-top.html"
+      }
     }
   ]
 }

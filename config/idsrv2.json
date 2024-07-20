@@ -5,6 +5,37 @@
     "https://linkedsoftwaredependencies.org/bundles/npm/idsrv2/^1.0.0/components/context.jsonld"
   ],
   "import": [
+    "css:config/app/init/static-root.json",
+    "css:config/app/main/default.json",
+    "css:config/app/variables/default.json",
+    "css:config/http/handler/default.json",
+    "css:config/http/middleware/default.json",
+    "css:config/http/notifications/disabled.json",
+    "css:config/http/server-factory/http.json",
+    "css:config/http/static/default.json",
+    "css:config/identity/access/restricted.json",
+    "css:config/identity/email/default.json",
+    "css:config/identity/handler/no-pods.json",
+    "css:config/identity/oidc/default.json",
+    "css:config/identity/ownership/token.json",
+    "css:config/identity/pod/static.json",
+    "css:config/ldp/authentication/dpop-bearer.json",
+    "css:config/ldp/authorization/webacl.json",
+    "css:config/ldp/handler/default.json",
+    "css:config/ldp/metadata-parser/default.json",
+    "css:config/ldp/metadata-writer/default.json",
+    "css:config/ldp/modes/default.json",
+    "css:config/storage/backend/file.json",
+    "css:config/storage/key-value/resource-store.json",
+    "css:config/storage/location/root.json",
+    "css:config/storage/middleware/default.json",
+    "css:config/util/auxiliary/acl.json",
+    "css:config/util/identifiers/suffix.json",
+    "css:config/util/index/default.json",
+    "css:config/util/logging/winston.json",
+    "css:config/util/representation-conversion/default.json",
+    "css:config/util/resource-locker/file.json",
+    "css:config/util/variables/default.json",
     "cga:config/google-auth.json"
   ],
   "@graph": [
@@ -17,7 +48,7 @@
     {
       "comment": "設定ファイル(settingsフォルダの中のjsonファイル)を読み込み情報を保存するインスタンス",
       "@id": "urn:idsrv2:core:Idsrv2Settings",
-      "@type": "Idsrv2Settings",
+      "@type": "Idsrv2Settings"
     },
     {
       "comment": "上のIdsrv2Settingsが初期化されるように設定",
@@ -112,7 +143,7 @@
       "comment": "以下管理機能の設定。*****************************************************",
     },
     {
-      "comment": "管理機能のAPIを処理するIdsrv2AdminHandlerを生成。adminWebIdsはダミー。",
+      "comment": "管理機能のAPIを処理するIdsrv2AdminHandlerを生成。",
       "@id": "urn:idsrv2:core:Idsrv2AdminHandler",
       "@type": "Idsrv2AdminHandler",
       "baseUrl": { "@id": "urn:solid-server:default:variable:baseUrl" },
@@ -157,15 +188,6 @@
         "filePath": "templates/identity/idsrv2/admin-top.html.ejs",
         "route": { "@id": "urn:idsrv2:core:Idsrv2AdminRoute" }
       }]
-    },
-    {
-      "comment": "idsrv2のトップページのHTML。",
-      "@type": "Override",
-      "overrideInstance": { "@id": "urn:solid-server:default:RootStaticAsset" },
-      "overrideParameters": {
-        "@type": "StaticAssetEntry",
-        "filePath": "templates/root/static/idsrv2-top.html"
-      }
     },
     {
       "comment": "以下コントロール(controls)の設定。*****************************************************",
@@ -217,6 +239,59 @@
           "ControlHandler:_controls_value": { "@id": "urn:idsrv2:core:Idsrv2AdminRoute" }
         }]
       }
+    },
+    {
+      "comment": [
+        "******************************************************",
+        "以下、WebACLでアクセス制限を設定するための色々をやる。",
+        "******************************************************"
+      ]
+    },
+    {
+      "comment": [
+        "テンプレートを使ってリソースを生成するStaticFolderGenerator",
+        "テンプレートはtemplates/root/adminに保存されている物を使う",
+      ],
+      "@id": "urn:idsrv2:core:StaticFolderGenerator1",
+      "@type": "StaticFolderGenerator",
+      "templateFolder": "templates/root/admin",
+      "resourcesGenerator": { "@id": "urn:solid-server:default:TemplatedResourcesGenerator" }
+    },
+    {
+      "comment": [
+        "/.account/admin/を初期化するContainerInitializer",
+        "初期化方法は上で作ったStaticFolderGeneratorにおまかせ",
+      ],
+      "@id": "urn:idsrv2:core:ContainerInitializer1",
+      "@type": "ContainerInitializer",
+      "args_baseUrl": { "@id": "urn:solid-server:default:variable:baseUrl" },
+      "args_path": "/.account/admin/",
+      "args_store": { "@id": "urn:solid-server:default:ResourceStore" },
+      "args_generator": { "@id": "urn:idsrv2:core:StaticFolderGenerator1" },
+      "args_storageKey": "adminContainerInitialized",
+      "args_storage": { "@id": "urn:solid-server:default:SetupStorage" }
+    },
+    {
+      "comment": [
+        "たぶん最初の1回だけ初期化をさせるためのConditionalHandler",
+        "上のContainerInitializerを使う。良くわかっていない",
+      ],
+      "@id": "urn:idsrv2:core:AdminContainerInitializer",
+      "@type": "ConditionalHandler",
+      "storageKey": "adminContainerInitialized",
+      "storageValue": true,
+      "storage": { "@id": "urn:solid-server:default:SetupStorage" },
+      "source": { "@id": "urn:idsrv2:core:ContainerInitializer1" },
+    },
+    {
+      "comment": [
+        "上のConditionalHandlerを初期化処理に追加",
+      ],
+      "@id": "urn:solid-server:default:PrimaryParallelInitializer",
+      "@type": "ParallelHandler",
+      "handlers": [
+        { "@id": "urn:idsrv2:core:AdminContainerInitializer" },
+      ],
     }
   ]
 }

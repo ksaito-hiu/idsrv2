@@ -1,0 +1,17 @@
+@prefix : <#>.
+@prefix acl: <http://www.w3.org/ns/auth/acl#>.
+@prefix foaf: <http://xmlns.com/foaf/0.1/>.
+@prefix dir: <./>.
+
+:ControlReadWrite
+    a acl:Authorization;
+    acl:accessTo dir:;
+    acl:agent <https://kenji.solidcommunity.net/profile/card#me>;
+    acl:default dir:;
+    acl:mode acl:Control, acl:Read, acl:Write.
+:Read
+    a acl:Authorization;
+    acl:accessTo dir:;
+    acl:agentClass foaf:Agent;
+    acl:default dir:;
+    acl:mode acl:Read.

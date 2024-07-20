@@ -1,0 +1,10 @@
+@prefix : <#>.
+@prefix acl: <http://www.w3.org/ns/auth/acl#>.
+@prefix dir: <./>.
+
+:ControlReadWrite
+    a acl:Authorization;
+    acl:accessTo dir:;
+    acl:agent <https://kenji.solidcommunity.net/profile/card#me>;
+    acl:default dir:;
+    acl:mode acl:Control, acl:Read, acl:Write.

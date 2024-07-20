@@ -44,6 +44,6 @@ if [ -z $CSS_BASE_URL ]; then
     CSS_BASE_URL='http://localhost:3000/'
 fi
 
-npx community-solid-server -b $CSS_BASE_URL -c @css:config/oidc.json ./config/idsrv2.json idsrv2-config.json -f data -m .
+npx community-solid-server -b $CSS_BASE_URL -c ./config/idsrv2.json idsrv2-config.json -f data -m .
 #node src/app.js
 
