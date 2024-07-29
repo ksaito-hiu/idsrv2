@@ -1,4 +1,13 @@
+<script src="https://cdn.jsdelivr.net/npm/@inrupt/solid-client-authn-browser@2/dist/solid-client-authn.bundle.js"></script>
+
 <h1>Admin Top</h1>
+
+<div>
+  <ul>
+    <li><button id="webid_login_link" href="">WebID login</button></li>
+    <li><button id="webid_logout_link" href="">WebID logout</button></li>
+  </ul>
+</div>
 
 <div>
 
@@ -15,11 +24,50 @@
   (async() => {
     let controls = await fetchControls('<%= idpIndex %>');
 
+    // Inruptのsolid-client-authn-browserパッケージでWebIDを
+    // 使ったLoginとLogoutを実行
+    window.auth = window.solidClientAuthentication;
+    async function completeLogin() {
+      const info = await auth.handleIncomingRedirect();
+      console.log("ページの状態把握完了(?): ",info);
+    }
+    await completeLogin();
+
+    async function myLogin() {
+      const oidcIssuer = prompt("Input your issuer:","https://solidcommunity.net");
+      //const oidcIssuer = "https://solidcommunity.net";
+      //const oidcIssuer = "https://id.do-johodai.ac.jp";
+      //const oidcIssuer = "https://s314.ks1.org";
+      //const oidcIssuer = "https://solidweb.me";
+      //const oidcIssuer = "https://login.inrupt.com/";
+      if (!auth.getDefaultSession().info.isLoggedIn) {
+        try {
+          await auth.login({
+            oidcIssuer,
+            redirectUrl: location.href,
+            clientName: "My application"
+          });
+        } catch(e) {
+console.log("GAHA2:",e);
+        }
+      } else {
+        console.log("You had already logged in.");
+      }
+    }
+    document.querySelector("#webid_login_link").addEventListener("click", myLogin);
+
+    async function myLogout() {
+      auth.logout();
+      const info = await auth.handleIncomingRedirect();
+      console.log(info);
+    }
+    document.querySelector("#webid_logout_link").addEventListener("click", myLogout);
+
     async function addAccount(e) {
       const google_sub = document.querySelector('#google_sub').value;
       const hiu_id = document.querySelector('#hiu_id').value;
         const data = { 'kind': 'addAccount', 'data': google_sub+','+hiu_id };
-      const res = await fetch(controls.idsrv2.admin,{
+      const res = await auth.fetch(controls.idsrv2.admin,{ // auth.fetch使うの忘れずに
         method: 'POST',
         headers: { 'Content-Type': 'application/json'},
         body: JSON.stringify(data)

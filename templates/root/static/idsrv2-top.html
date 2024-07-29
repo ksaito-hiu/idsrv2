@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <title>Community Solid Server</title>
   <link rel="stylesheet" href="/.well-known/css/styles/main.css" type="text/css">
-  <script src="https://cdn.jsdelivr.net/npm/@inrupt/solid-client-authn-browser@2/dist/solid-client-authn.bundle.js"></script>
 </head>
 <body>
   <header>
@@ -26,8 +25,7 @@
       <li><a id="login_link" href="">ローカルログイン</a></li>
       <li><a id="logout_link" href="">ローカルログアウト</a></li>
       <li><a id="account_link" href="">アカウント情報</a></li>
-      <li><button id="webid_login_link" href="">WebID login</button></li>
-      <li><button id="webid_logout_link" href="">WebID logout</button></li>
+      <li><a id="admin_link" href="">管理</a></li>
     </ul>
   </main>
 </body>
@@ -40,49 +38,12 @@
     const loginUrl = controls?.html?.google?.login;
     const logoutUrl = controls?.account?.logout;
     const accountUrl = controls?.html?.account?.account;
+    const adminUrl = controls?.html?.idsrv2?.admin;
     document.querySelector('#regist_link').setAttribute('href',registrationUrl);
     document.querySelector('#login_link').setAttribute('href',loginUrl);
     document.querySelector('#logout_link').setAttribute('href',logoutUrl);
     document.querySelector('#account_link').setAttribute('href',accountUrl);
-
-    // Inruptのsolid-client-authn-browserパッケージでWebIDを
-    // 使ったLoginとLogoutを実行
-    window.auth = window.solidClientAuthentication;
-    async function completeLogin() {
-      const info = await auth.handleIncomingRedirect();
-      console.log("ページの状態把握完了(?): ",info);
-    }
-    await completeLogin();
-
-    async function myLogin() {
-      const oidcIssuer = prompt("Input your issuer:","https://solidcommunity.net");
-      //const oidcIssuer = "https://solidcommunity.net";
-      //const oidcIssuer = "https://id.do-johodai.ac.jp";
-      //const oidcIssuer = "https://s314.ks1.org";
-      //const oidcIssuer = "https://solidweb.me";
-      //const oidcIssuer = "https://login.inrupt.com/";
-      if (!auth.getDefaultSession().info.isLoggedIn) {
-        try {
-          await auth.login({
-            oidcIssuer,
-            redirectUrl: location.href,
-            clientName: "My application"
-          });
-        } catch(e) {
-console.log("GAHA2:",e);
-        }
-      } else {
-        console.log("You had already logged in.");
-      }
-    }
-    document.querySelector("#webid_login_link").addEventListener("click", myLogin);
-
-    async function myLogout() {
-      auth.logout();
-      const info = await auth.handleIncomingRedirect();
-      console.log(info);
-    }
-    document.querySelector("#webid_logout_link").addEventListener("click", myLogout);
+    document.querySelector('#admin_link').setAttribute('href',adminUrl);
   })();
 </script>
 </html>

@@ -45,6 +45,8 @@ export class Idsrv2AdminHandler extends JsonInteractionHandler {
     this.settings = args.settings;
   }
 
+  // この方法で権限チェックするのではなくWebACLの仕組みで権限設定する方法に
+  // したので、結局使わないけどコードだけ残しておく。
   async checkPermission(input: JsonInteractionHandlerInput): Promise<void> {
     if (!input.accountId) {
       throw new Error('Login is required.');
@@ -64,11 +66,11 @@ export class Idsrv2AdminHandler extends JsonInteractionHandler {
   }
 
   public async canHandle(input: JsonInteractionHandlerInput): Promise<void> {
-    await this.checkPermission(input);
+    //await this.checkPermission(input);
   }
 
   public async handle(input: JsonInteractionHandlerInput): Promise<JsonRepresentation<OutType>> {
-    await this.checkPermission(input);
+    //await this.checkPermission(input);
     const { kind, data } = await validateWithError(inSchema, input.json);
     if (kind === 'addAccount') {
       const [googleSub,idsrv2Id] = data.split(',')

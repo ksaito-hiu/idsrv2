@@ -265,7 +265,7 @@
       "@id": "urn:idsrv2:core:ContainerInitializer1",
       "@type": "ContainerInitializer",
       "args_baseUrl": { "@id": "urn:solid-server:default:variable:baseUrl" },
-      "args_path": "/.account/admin/",
+      "args_path": "/.account/idsrv2/admin/",
       "args_store": { "@id": "urn:solid-server:default:ResourceStore" },
       "args_generator": { "@id": "urn:idsrv2:core:StaticFolderGenerator1" },
       "args_storageKey": "adminContainerInitialized",
