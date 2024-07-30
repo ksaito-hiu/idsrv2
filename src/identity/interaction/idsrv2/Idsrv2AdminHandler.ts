@@ -26,7 +26,7 @@ export interface Idsrv2AdminHandlerArgs {
   settings: Idsrv2Settings;
 }
 
-/* 北海道情報大の管理者用API */
+/* 管理者用API */
 export class Idsrv2AdminHandler extends JsonInteractionHandler {
   private readonly baseUrl: string;
   private readonly accountStore: AccountStore;

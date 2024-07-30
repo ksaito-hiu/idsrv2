@@ -59,7 +59,10 @@
       ]
     },
     {
-      "comment": "北海道情報大学固有の情報を保存するためのJsonResourceStorage。",
+      "comment": [
+        "idsrv2のIDとCSSのaccountId、google OIDCのsubを",
+        "保存するためのJsonResourceStorage。"
+      ],
       "@id": "urn:idsrv2:core:Idsrv2Storage",
       "@type": "JsonResourceStorage",
       "source": { "@id": "urn:solid-server:default:ResourceStore" },
