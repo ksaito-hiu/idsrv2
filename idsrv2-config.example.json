@@ -1,7 +1,7 @@
 {
   "@context": [
     "https://linkedsoftwaredependencies.org/bundles/npm/@solid/community-server/^7.0.0/components/context.jsonld",
-    "https://linkedsoftwaredependencies.org/bundles/npm/css-google-auth/^1.0.0/components/context.jsonld",
+    "https://linkedsoftwaredependencies.org/bundles/npm/css-google-auth/^2.0.0/components/context.jsonld",
     "https://linkedsoftwaredependencies.org/bundles/npm/idsrv2/^1.0.0/components/context.jsonld"
   ],
   "@graph": [
@@ -28,7 +28,7 @@
       "overrideInstance": { "@id": "urn:solid-server:default:RootStaticAsset" },
       "overrideParameters": {
         "@type": "StaticAssetEntry",
-        "filePath": "templates/root/static/idsrv2-top.html"
+        "filePath": "settings/idsrv2-top.example.html"
       }
     }
   ]

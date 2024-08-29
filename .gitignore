@@ -3,6 +3,5 @@ dist
 node_modules
 idsrv2-config.json
 settings/idsrv2.json
-settings/users.json
-settings/clients.json
+settings/admin
 

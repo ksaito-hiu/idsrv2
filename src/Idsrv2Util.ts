@@ -1,5 +1,6 @@
 import { getLoggerFor, joinFilePath } from '@solid/community-server';
-import { readFile } from 'fs/promises';
+//import { readFile } from 'fs/promises';
+import { readFileSync } from 'fs';
 
 /**
  * 
@@ -11,7 +12,7 @@ export function getModuleRoot(): string {
 /**
  * 
  */
-export async function loadJson(file_path: string): Promise<any> {
-  const str: string = await readFile(file_path,'utf-8');
+export function loadJson(file_path: string): any {
+  const str: string = readFileSync(file_path,'utf-8');
   return JSON.parse(str) as any;
 }

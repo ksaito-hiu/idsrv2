@@ -20,10 +20,13 @@ console.log('GAHA: Idsrv2PostGAccountGen, baseUrl=',this.baseUrl);
 
   createIdsFromEMail(email: string) {
     let idsrv2Id;
+if (email==="ksaito@do-johodai.ac.jp") {
+    idsrv2Id = "f200088071"; // 自分だけテスト
+} else {
     idsrv2Id = email.replace(this.settings.idsrv2.mailToId.arg1,this.settings.idsrv2.mailToId.arg2);
-if (email==="ksaito@do-johodai.ac.jp") idsrv2Id = "f200088071"; // 自分だけテスト
     if (email === idsrv2Id)
       throw new Error('Idsrv2PostGAccountGen: could not get idsrv2Id from email. email='+email);
+}
     return {
       webId: this.baseUrl+"/"+this.settings.idsrv2.profile_directory+"/"+idsrv2Id+'#me',
       idsrv2Id

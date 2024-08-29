@@ -1,7 +1,7 @@
 {
   "@context": [
     "https://linkedsoftwaredependencies.org/bundles/npm/@solid/community-server/^7.0.0/components/context.jsonld",
-    "https://linkedsoftwaredependencies.org/bundles/npm/css-google-auth/^1.0.0/components/context.jsonld",
+    "https://linkedsoftwaredependencies.org/bundles/npm/css-google-auth/^2.0.0/components/context.jsonld",
     "https://linkedsoftwaredependencies.org/bundles/npm/idsrv2/^1.0.0/components/context.jsonld"
   ],
   "import": [
@@ -15,7 +15,10 @@
     "css:config/http/static/default.json",
     "css:config/identity/access/restricted.json",
     "css:config/identity/email/default.json",
-    "css:config/identity/handler/no-pods.json",
+      "css:config/identity/handler/base/default.json",
+      "css:config/identity/handler/routing/default.json",
+      "css:config/identity/handler/storage/password.json",
+      "css:config/identity/handler/enable/account.json",
     "css:config/identity/oidc/default.json",
     "css:config/identity/ownership/token.json",
     "css:config/identity/pod/static.json",
@@ -36,7 +39,12 @@
     "css:config/util/representation-conversion/default.json",
     "css:config/util/resource-locker/file.json",
     "css:config/util/variables/default.json",
-    "cga:config/google-auth.json"
+        "cga:config/identity/handler/routing/google/main.json",
+        "cga:config/identity/handler/routing/google/google-oidc.json",
+        "cga:config/identity/handler/routing/google/login.json",
+        "cga:config/identity/handler/routing/google/register.json",
+        "cga:config/identity/handler/routing/google/temporary.json",
+      "cga:config/identity/handler/storage/google.json"
   ],
   "@graph": [
     {
@@ -51,11 +59,17 @@
       "@type": "Idsrv2Settings"
     },
     {
-      "comment": "上のIdsrv2Settingsが初期化されるように設定",
-      "@id": "urn:solid-server:default:PrimaryParallelInitializer",
-      "@type": "ParallelHandler",
-      "handlers": [
-        { "@id" : "urn:idsrv2:core:Idsrv2Settings" }
+      "comment": "上のIdsrv2Settingsが最初に初期化されるようにPrimaryParallelInitializerを上書き設定",
+      "@id": "urn:idsrv2:core:InitializerOverride",
+      "@type": "Override",
+      "overrideInstance": { "@id": "urn:solid-server:default:PrimaryParallelInitializer" },
+      "overrideSteps": [
+        {
+          "@type": "OverrideListInsertAt",
+          "overrideParameter": { "@id": "urn:solid-server:default:PrimaryParallelInitializer:_handlers" },
+          "overrideTarget": 0,
+          "overrideValue": { "@id" : "urn:idsrv2:core:Idsrv2Settings" }
+        }
       ]
     },
     {
@@ -95,20 +109,6 @@
         "googleStore": { "@id": "urn:cga:core:GoogleStore" },
         "gSessionStore": { "@id": "urn:cga:core:GSessionStore" },
         "cookieStore": { "@id": "urn:solid-server:default:CookieStore" },
-        "googleAuthFilter": { "@id": "urn:idsrv2:core:GoogleAuthFilter" },
-        "postGAccountGen": { "@id": "urn:idsrv2:core:PostGAccountGen" }
-      }
-    },
-    {
-      "comment": "CreateGoogleHandlerをオーバライドしてGoogleAuthFilterとPostGAccountGenを置き換える。",
-      "@type": "Override",
-      "overrideInstance": { "@id": "urn:cga:core:CreateGoogleHandler" },
-      "overrideParameters": {
-        "@type": "CreateGoogleHandler",
-        "googleOIDC": { "@id": "urn:cga:core:GoogleOIDC" },
-        "googleStore": { "@id": "urn:cga:core:GoogleStore" },
-        "googleRoute": { "@id": "urn:cga:core:GoogleIdRoute" },
-        "gSessionStore": { "@id": "urn:cga:core:GSessionStore" },
         "googleAuthFilter": { "@id": "urn:idsrv2:core:GoogleAuthFilter" },
         "postGAccountGen": { "@id": "urn:idsrv2:core:PostGAccountGen" }
       }
@@ -253,11 +253,11 @@
     {
       "comment": [
         "テンプレートを使ってリソースを生成するStaticFolderGenerator",
-        "テンプレートはtemplates/root/adminに保存されている物を使う",
+        "テンプレートはsettings/adminに保存されている物を使う",
       ],
       "@id": "urn:idsrv2:core:StaticFolderGenerator1",
       "@type": "StaticFolderGenerator",
-      "templateFolder": "templates/root/admin",
+      "templateFolder": "settings/admin",
       "resourcesGenerator": { "@id": "urn:solid-server:default:TemplatedResourcesGenerator" }
     },
     {
