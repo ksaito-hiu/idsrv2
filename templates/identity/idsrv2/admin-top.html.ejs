@@ -3,20 +3,44 @@
 <h1>Admin Top</h1>
 
 <div>
-  <ul>
-    <li><button id="webid_login_link" href="">WebID login</button></li>
-    <li><button id="webid_logout_link" href="">WebID logout</button></li>
-  </ul>
+  <p id="webid_info">You are logged in as &lt;...&gt;.</p>
+  <p id="not_login_info">You are not logged in.</p>
+  <div id="webid_logout_div"><button id="webid_logout_btn">WebID logout</button></div>
+  <div id="webid_login_div"><button id="webid_login_btn">WebID login</button></div>
 </div>
 
-<div>
+<div id="admin_ui">
 
   <h2>アカウント追加</h2>
 
-  <p>google_sub:<input id="google_sub" type="text"></p>
-  <p>hiu_id:<input id="hiu_id" type="text"></p>
+  <div id="add_account_div">
+    <p>google_sub:<input id="google_sub" type="text"></p>
+    <p>hiu_id:<input id="hiu_id" type="text"></p>
 
-  <button id="add_account_btn">アカウント追加</button>
+    <button id="add_account_btn">アカウント追加</button>
+  </div>
+
+  <h2>アカウント削除</h2>
+
+  <div id="del_account_div">
+    <p>hiu_id:<input id="hiu_id2" type="text"></p>
+
+    <button id="del_account_btn">アカウント削除</button>
+  </div>
+
+  <h2>アカウント情報のバックアップ</h2>
+
+  <div id="backup_accounts_div">
+    <p>Use Google Chrome or Edge to open file picker.</p>
+    <div><button id="backup_accounts_btn">バックアップ</button></div>
+  </div>
+
+  <h2>アカウント情報のリストア</h2>
+
+  <div id="restore_accounts_div">
+    <p>Use Google Chrome or Edge to open file picker.</p>
+    <div><button id="restore_accounts_btn">リストア</button></div>
+  </div>
 
 </div>
 
@@ -30,8 +54,46 @@
     async function completeLogin() {
       const info = await auth.handleIncomingRedirect();
       console.log("ページの状態把握完了(?): ",info);
+      const a = document.querySelector('#admin_ui');
+      const p1 = document.querySelector('#webid_info');
+      const p2 = document.querySelector('#not_login_info');
+      const d1 = document.querySelector('#webid_logout_div');
+      const d2 = document.querySelector('#webid_login_div');
+      if (info.isLoggedIn) {
+        p1.textContent = "You are logged in as <"+info.webId+">.";
+        p1.style.display = "block";
+        p2.style.display = "none";
+        d1.style.display = "block";
+        d2.style.display = "none";
+        const isAuthorized = await testAuthorized();
+        if (isAuthorized)
+          a.style.display = "block";
+        else
+          a.style.display = "none";
+      } else {
+        p1.style.display = "none";
+        p2.style.display = "block";
+        d1.style.display = "none";
+        d2.style.display = "block";
+        a.style.display = "none";
+      }
     }
     await completeLogin();
+
+    // 管理者の資格があるかどうかテストする
+    async function testAuthorized() {
+      const data = { 'kind': 'testAuthorize', 'data': "dummy" };
+      const res = await auth.fetch(controls.idsrv2.admin,{ // auth.fetch使うの忘れずに
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json'},
+        body: JSON.stringify(data)
+      });
+      const j = await res.json();
+      if (j.output && j.output === "ok")
+        return true;
+      else
+        return false;
+    }
 
     async function myLogin() {
       const oidcIssuer = prompt("Input your issuer:","https://solidcommunity.net");
@@ -54,27 +116,115 @@ console.log("GAHA2:",e);
         console.log("You had already logged in.");
       }
     }
-    document.querySelector("#webid_login_link").addEventListener("click", myLogin);
+    document.querySelector("#webid_login_btn").addEventListener("click", myLogin);
 
     async function myLogout() {
-      auth.logout();
-      const info = await auth.handleIncomingRedirect();
-      console.log(info);
+      await auth.logout();
+      await completeLogin();
     }
-    document.querySelector("#webid_logout_link").addEventListener("click", myLogout);
+    document.querySelector("#webid_logout_btn").addEventListener("click", myLogout);
 
     async function addAccount(e) {
       const google_sub = document.querySelector('#google_sub').value;
       const hiu_id = document.querySelector('#hiu_id').value;
-        const data = { 'kind': 'addAccount', 'data': google_sub+','+hiu_id };
+      const data = { 'kind': 'addAccount', 'data': google_sub+','+hiu_id };
       const res = await auth.fetch(controls.idsrv2.admin,{ // auth.fetch使うの忘れずに
         method: 'POST',
         headers: { 'Content-Type': 'application/json'},
         body: JSON.stringify(data)
       });
       const j = await res.json();
-console.log('GAHA: ',j);
+console.log('GAHA1: ',j);
     }
     document.querySelector('#add_account_btn').addEventListener('click',addAccount);
+
+    async function delAccount(e) {
+      const hiu_id2 = document.querySelector('#hiu_id2').value;
+      const data = { 'kind': 'delAccount', 'data': hiu_id2 };
+      const res = await auth.fetch(controls.idsrv2.admin,{ // auth.fetch使うの忘れずに
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json'},
+        body: JSON.stringify(data)
+      });
+      const j = await res.json();
+console.log('GAHA2: ',j);
+    }
+    document.querySelector("#del_account_btn").addEventListener('click',delAccount);
+
+    async function backupAccounts(e) {
+      const data = { 'kind': 'backupAccounts', 'data': "dummy" };
+      const res = await auth.fetch(controls.idsrv2.admin,{ // auth.fetch使うの忘れずに
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json'},
+        body: JSON.stringify(data)
+      });
+      const j = await res.json();
+console.log('GAHA3: ',j);
+      await saveStringToJsonFile(j.output);
+    }
+    document.querySelector("#backup_accounts_btn").addEventListener('click',backupAccounts);
+
+    async function restoreAccounts(e) {
+      const jsonStr = await loadJsonStrFromOneFile();
+      const data = { 'kind': 'restoreAccounts', 'data': jsonStr };
+      const res = await auth.fetch(controls.idsrv2.admin,{ // auth.fetch使うの忘れずに
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json'},
+        body: JSON.stringify(data)
+      });
+      const j = await res.json();
+console.log('GAHA4: ',j);
+    }
+    document.querySelector("#restore_accounts_btn").addEventListener('click',restoreAccounts);
+
+// ***************************************************************
+
+    // 引数の文字列データをファイルピッカでJSONとして保存
+    async function saveStringToJsonFile(jsonStr) {
+      // 以下の設定でファイルピッカーを開く。
+      const options = {
+        excludeAcceptAllOption: false, // ←テキスト以外を選択できなくする
+        suggestedName: "accounts.json",
+        types: [
+          { description: "Json", accept: { "application/json": [".json"] }}
+        ]
+      };
+
+      try {
+        // FileSystemFileHandleオブジェクトがPromiseで帰ってくる。
+        const handle = await window.showSaveFilePicker(options);
+        const writable = await handle.createWritable();
+        writable.write(jsonStr);
+        writable.close();
+      } catch(e) {
+        // ユーザがファイルの選択をキャンセルした時などにここにくる
+      }
+    }
+
+    // ファイルピッカでファイルを選んでJSON文字列を返す
+    async function loadJsonStrFromOneFile() {
+      // 今回は1つしかファイルを選択しないという設定と前提で前提で、
+      // 設定するoptionsを作る。
+      const options = {
+        multiple: false,
+        excludeAcceptAllOption: false, // ←JSON以外を選択できなくする
+        types: [
+          { description: "JsonFile", accept: { "application/json": [".json"] }}
+        ]
+      };
+
+      try {
+        // FileSystemFileHandleオブジェクトの配列がPromiseで帰ってくる。
+        // ただ今回はオプションで1個限定にしているので以下の書き方がスマート。
+        const [handle] = await window.showOpenFilePicker(options);
+        const file = await handle.getFile();
+        const text = await file.text();
+        return text;
+      } catch(e) {
+        // ユーザがファイルの選択をキャンセルした時にここにくる
+        return null
+      }
+    }
+
   })();
 </script>

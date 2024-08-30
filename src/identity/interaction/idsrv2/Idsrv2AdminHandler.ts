@@ -73,18 +73,75 @@ export class Idsrv2AdminHandler extends JsonInteractionHandler {
     //await this.checkPermission(input);
     const { kind, data } = await validateWithError(inSchema, input.json);
     if (kind === 'addAccount') {
-      const [googleSub,idsrv2Id] = data.split(',')
-      const accountId = await this.accountStore.create();
-      const googleId = await this.googleStore.create(googleSub, accountId); // ダブリチェックあり
-      const webId = this.baseUrl + 'people/' + idsrv2Id + '#me';
-      const widIdId = await this.webIdStore.create(webId, accountId);
-      await this.idsrv2Storage.set(idsrv2Id, {idsrv2Id, accountId, googleId});
-      return { json: { output: 'ok,accountId='+accountId+',googleId='+googleId+',' } };
-    } else if (kind === 'dummy') {
-      return { json: { output: 'dummy' } };
+      const output = await this.addAccount(data);
+      return { json: { output } };
+    } else if (kind === 'delAccount') {
+      const output = await this.delAccount(data);
+      return { json: { output } };
+    } else if (kind === 'backupAccounts') {
+      const output = await this.backupAccounts(data);
+      return { json: { output } };
+    } else if (kind === 'restoreAccounts') {
+      const output = await this.restoreAccounts(data);
+      return { json: { output } };
+    } else if (kind === 'testAuthorize') {
+      return { json: { output: 'ok' } };
     } else {
       return { json: { output: 'no kind error' } };
     }
+  }
+
+  async addAccount(data: any) {
+    const [googleSub,idsrv2Id] = data.split(',');
+    const accountId = await this.accountStore.create();
+    const googleId = await this.googleStore.create(googleSub, accountId); // ダブリチェックあり
+    const webId = this.baseUrl + 'people/' + idsrv2Id + '#me';
+    const widIdId = await this.webIdStore.create(webId, accountId);
+    await this.idsrv2Storage.set(idsrv2Id, {idsrv2Id, accountId, googleId});
+    return 'ok,accountId='+accountId+',googleId='+googleId+',';
+  }
+
+  async delAccount(data: any) {
+    const idsrv2 = await this.idsrv2Storage.get(data);
+    if (idsrv2) {
+      const {idsrv2Id, accountId, googleId} = idsrv2;
+      await this.idsrv2Storage.delete(idsrv2Id);
+      const googleEntry = await this.googleStore.findByGoogleSub(googleId);
+      if (googleEntry) {
+        this.googleStore.delete(googleEntry.id);
+      } else {
+        return 'error, could not delete google_sub.';
+      }
+      const webIdEntries = await this.webIdStore.findLinks(accountId);
+      webIdEntries.forEach(async webIdEntry => {
+        await this.webIdStore.delete(webIdEntry.id);
+      });
+      //await this.accountStore.... // 消し方わからない
+      return 'ok,accountId='+accountId+',googleId='+googleId;
+    } else {
+      return 'error,account not found';
+    }
+  }
+
+  async backupAccounts(data: any) {
+    let output = '[';
+    let isFirst = true;
+    const entries = this.idsrv2Storage.entries();
+    for await (const entry of entries) {
+      const [idsrv2Id, googleId] = entry;
+      if (isFirst) {
+        isFirst = false;
+      } else {
+        output += ',';
+      }
+      output += `{idsrv2Id: "${idsrv2Id}", googleId: "${googleId}"}`;
+    }
+    output += ']';
+    return output;
+  }
+
+  async restoreAccounts(data: any) {
+    return 'ok,dummy';
   }
 }
 
