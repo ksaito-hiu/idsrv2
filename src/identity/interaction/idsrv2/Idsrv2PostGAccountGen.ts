@@ -13,7 +13,6 @@ export class Idsrv2PostGAccountGen implements PostGAccountGen {
   public constructor(webIdStore: WebIdStore, baseUrl: string, idsrv2Storage: JsonResourceStorage<Idsrv2Data>, settings: Idsrv2Settings) {
     this.webIdStore = webIdStore;
     this.baseUrl = baseUrl.endsWith('/') ? baseUrl.slice(0,-1) : baseUrl;
-console.log('GAHA: Idsrv2PostGAccountGen, baseUrl=',this.baseUrl);
     this.idsrv2Storage = idsrv2Storage;
     this.settings = settings;
   }
@@ -38,6 +37,7 @@ if (email==="ksaito@do-johodai.ac.jp") {
 console.log('GAHA1: email=', email);
     const { webId, idsrv2Id } = this.createIdsFromEMail(email);
 console.log('GAHA2: webId=', webId);
+console.log('GAHA3: googleId=', googleId);
     const a = await this.webIdStore.create(webId, accountId);
     await this.idsrv2Storage.set(idsrv2Id, {idsrv2Id, accountId, googleId});
     return;

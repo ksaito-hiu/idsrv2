@@ -21,6 +21,7 @@
       <li><a id="regist_link" href="">User registration</a></li>
       <li><a id="login_link" href="">Local login</a></li>
       <li><a id="logout_link" href="">Local logout</a></li>
+      <li><a id="sub_link" href="">Get Google Sub Info</a></li>
       <li><a id="account_link" href="">Account Information</a></li>
       <li><a id="admin_link" href="">Admin</a></li>
     </ul>
@@ -34,11 +35,13 @@
     const registrationUrl = controls?.html?.google?.register;
     const loginUrl = controls?.html?.google?.login;
     const logoutUrl = controls?.account?.logout;
+    const subUrl = controls?.html?.google?.sub;
     const accountUrl = controls?.html?.account?.account;
     const adminUrl = controls?.html?.idsrv2?.admin;
     document.querySelector('#regist_link').setAttribute('href',registrationUrl);
     document.querySelector('#login_link').setAttribute('href',loginUrl);
     document.querySelector('#logout_link').setAttribute('href',logoutUrl);
+    document.querySelector('#sub_link').setAttribute('href',subUrl);
     document.querySelector('#account_link').setAttribute('href',accountUrl);
     document.querySelector('#admin_link').setAttribute('href',adminUrl);
   })();

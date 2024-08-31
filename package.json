@@ -1,6 +1,6 @@
 {
   "name": "idsrv2",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "description": "A Solid OIDC authentication server appropriating google accounts for authentication.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -45,7 +45,7 @@
   "homepage": "https://github.com/ksaito-hiu/idsrv2#readme",
   "dependencies": {
     "@solid/community-server": "^7.1.2",
-    "css-google-auth": "^2.0.4",
+    "css-google-auth": "^2.1.0",
     "openid-client": "^5.6.5"
   },
   "devDependencies": {

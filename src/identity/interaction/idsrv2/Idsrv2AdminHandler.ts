@@ -92,12 +92,12 @@ export class Idsrv2AdminHandler extends JsonInteractionHandler {
   }
 
   async addAccount(data: any) {
-    const [googleSub,idsrv2Id] = data.split(',');
+    const [idsrv2Id,googleSub] = data.split(',');
     const accountId = await this.accountStore.create();
     const googleId = await this.googleStore.create(googleSub, accountId); // ダブリチェックあり
     const webId = this.baseUrl + 'people/' + idsrv2Id + '#me';
     const widIdId = await this.webIdStore.create(webId, accountId);
-    await this.idsrv2Storage.set(idsrv2Id, {idsrv2Id, accountId, googleId});
+    await this.idsrv2Storage.set(idsrv2Id, {idsrv2Id, accountId, googleId: googleSub});
     return 'ok,accountId='+accountId+',googleId='+googleId+',';
   }
 
@@ -106,6 +106,10 @@ export class Idsrv2AdminHandler extends JsonInteractionHandler {
     if (idsrv2) {
       const {idsrv2Id, accountId, googleId} = idsrv2;
       await this.idsrv2Storage.delete(idsrv2Id);
+/*
+      //await this.accountStore.... // 消し方わからない
+      await this.accountStore.storage.delete(this.accountStore.storage.type,accountId)
+*/
       const googleEntry = await this.googleStore.findByGoogleSub(googleId);
       if (googleEntry) {
         this.googleStore.delete(googleEntry.id);
@@ -116,7 +120,6 @@ export class Idsrv2AdminHandler extends JsonInteractionHandler {
       webIdEntries.forEach(async webIdEntry => {
         await this.webIdStore.delete(webIdEntry.id);
       });
-      //await this.accountStore.... // 消し方わからない
       return 'ok,accountId='+accountId+',googleId='+googleId;
     } else {
       return 'error,account not found';
@@ -134,13 +137,25 @@ export class Idsrv2AdminHandler extends JsonInteractionHandler {
       } else {
         output += ',';
       }
-      output += `{idsrv2Id: "${idsrv2Id}", googleId: "${googleId}"}`;
+      output += `{"idsrv2Id": "${googleId.idsrv2Id}", "googleSub": "${googleId.googleId}"}`;
     }
     output += ']';
     return output;
   }
 
   async restoreAccounts(data: any) {
+    const entries = JSON.parse(data);
+    for (let i=0;i<entries.length;i++) {
+      const entry = entries[i];
+      const idsrv2Id = entry.idsrv2Id as string;
+      const googleSub  = entry.googleSub as string;
+console.log("GAHA3 !!!!!!!!: idsrv2Id="+idsrv2Id+", googleSub="+googleSub);
+      const accountId = await this.accountStore.create();
+      const googleId = await this.googleStore.create(googleSub, accountId); // ダブリチェックあり
+      const webId = this.baseUrl + 'people/' + idsrv2Id + '#me';
+      const widIdId = await this.webIdStore.create(webId, accountId);
+      await this.idsrv2Storage.set(idsrv2Id, {idsrv2Id, accountId, googleId: googleSub});
+    }
     return 'ok,dummy';
   }
 }

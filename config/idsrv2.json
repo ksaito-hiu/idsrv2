@@ -41,6 +41,7 @@
     "css:config/util/variables/default.json",
         "cga:config/identity/handler/routing/google/main.json",
         "cga:config/identity/handler/routing/google/google-oidc.json",
+        "cga:config/identity/handler/routing/google/create.json",
         "cga:config/identity/handler/routing/google/login.json",
         "cga:config/identity/handler/routing/google/register.json",
         "cga:config/identity/handler/routing/google/temporary.json",
@@ -57,20 +58,6 @@
       "comment": "設定ファイル(settingsフォルダの中のjsonファイル)を読み込み情報を保存するインスタンス",
       "@id": "urn:idsrv2:core:Idsrv2Settings",
       "@type": "Idsrv2Settings"
-    },
-    {
-      "comment": "上のIdsrv2Settingsが最初に初期化されるようにPrimaryParallelInitializerを上書き設定",
-      "@id": "urn:idsrv2:core:InitializerOverride",
-      "@type": "Override",
-      "overrideInstance": { "@id": "urn:solid-server:default:PrimaryParallelInitializer" },
-      "overrideSteps": [
-        {
-          "@type": "OverrideListInsertAt",
-          "overrideParameter": { "@id": "urn:solid-server:default:PrimaryParallelInitializer:_handlers" },
-          "overrideTarget": 0,
-          "overrideValue": { "@id" : "urn:idsrv2:core:Idsrv2Settings" }
-        }
-      ]
     },
     {
       "comment": [
@@ -295,6 +282,21 @@
       "handlers": [
         { "@id": "urn:idsrv2:core:AdminContainerInitializer" },
       ],
-    }
+    },
+    {
+      "comment": "アカウント情報画面のgoogle_subの削除ボタンを非常時にするためにCreateGoogleHandlerの引数を上書き。",
+      "@type": "Override",
+      "overrideInstance": { "@id": "urn:cga:core:CreateGoogleHandler" },
+      "overrideParameters": {
+        "@type": "CreateGoogleHandler",
+        "googleOIDC": { "@id": "urn:cga:core:GoogleOIDC" },
+        "googleStore": { "@id": "urn:cga:core:GoogleStore" },
+        "googleRoute": { "@id": "urn:cga:core:GoogleIdRoute" },
+        "gSessionStore": { "@id": "urn:cga:core:GSessionStore" },
+        "googleAuthFilter": { "@id": "urn:cga:core:GoogleAuthFilter" },
+        "postGAccountGen": { "@id": "urn:cga:core:PostGAccountGen" },
+        "addDelLinks": false
+      }
+    },
   ]
 }

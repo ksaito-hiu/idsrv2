@@ -14,8 +14,8 @@
   <h2>アカウント追加</h2>
 
   <div id="add_account_div">
+    <p>idsrv2_id:<input id="idsrv2_id" type="text"></p>
     <p>google_sub:<input id="google_sub" type="text"></p>
-    <p>hiu_id:<input id="hiu_id" type="text"></p>
 
     <button id="add_account_btn">アカウント追加</button>
   </div>
@@ -23,7 +23,8 @@
   <h2>アカウント削除</h2>
 
   <div id="del_account_div">
-    <p>hiu_id:<input id="hiu_id2" type="text"></p>
+    <p>未実装です。</p>
+    <p>idsrv2_id:<input id="idsrv2_id2" type="text"></p>
 
     <button id="del_account_btn">アカウント削除</button>
   </div>
@@ -39,6 +40,7 @@
 
   <div id="restore_accounts_div">
     <p>Use Google Chrome or Edge to open file picker.</p>
+    <p>一旦データを全て空にしてからリストアして下さい。</p>
     <div><button id="restore_accounts_btn">リストア</button></div>
   </div>
 
@@ -125,9 +127,9 @@ console.log("GAHA2:",e);
     document.querySelector("#webid_logout_btn").addEventListener("click", myLogout);
 
     async function addAccount(e) {
+      const idsrv2_id = document.querySelector('#idsrv2_id').value;
       const google_sub = document.querySelector('#google_sub').value;
-      const hiu_id = document.querySelector('#hiu_id').value;
-      const data = { 'kind': 'addAccount', 'data': google_sub+','+hiu_id };
+      const data = { 'kind': 'addAccount', 'data': idsrv2_id+','+google_sub };
       const res = await auth.fetch(controls.idsrv2.admin,{ // auth.fetch使うの忘れずに
         method: 'POST',
         headers: { 'Content-Type': 'application/json'},
@@ -139,8 +141,8 @@ console.log('GAHA1: ',j);
     document.querySelector('#add_account_btn').addEventListener('click',addAccount);
 
     async function delAccount(e) {
-      const hiu_id2 = document.querySelector('#hiu_id2').value;
-      const data = { 'kind': 'delAccount', 'data': hiu_id2 };
+      const idsrv2_id2 = document.querySelector('#idsrv2_id2').value;
+      const data = { 'kind': 'delAccount', 'data': idsrv2_id2 };
       const res = await auth.fetch(controls.idsrv2.admin,{ // auth.fetch使うの忘れずに
         method: 'POST',
         headers: { 'Content-Type': 'application/json'},
