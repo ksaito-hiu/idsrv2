@@ -44,8 +44,8 @@
   },
   "homepage": "https://github.com/ksaito-hiu/idsrv2#readme",
   "dependencies": {
-    "@solid/community-server": "^7.1.0",
-    "css-google-auth": "^2.0.2",
+    "@solid/community-server": "^7.1.2",
+    "css-google-auth": "^2.0.4",
     "openid-client": "^5.6.5"
   },
   "devDependencies": {
