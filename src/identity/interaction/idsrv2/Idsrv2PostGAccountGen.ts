@@ -9,12 +9,16 @@ export class Idsrv2PostGAccountGen implements PostGAccountGen {
   private readonly baseUrl: string;
   private readonly idsrv2Storage: JsonResourceStorage<Idsrv2Data>;
   private readonly settings: Idsrv2Settings;
+  private readonly replace1: RegExp;
+  private readonly replace2: string;
 
   public constructor(webIdStore: WebIdStore, baseUrl: string, idsrv2Storage: JsonResourceStorage<Idsrv2Data>, settings: Idsrv2Settings) {
     this.webIdStore = webIdStore;
     this.baseUrl = baseUrl.endsWith('/') ? baseUrl.slice(0,-1) : baseUrl;
     this.idsrv2Storage = idsrv2Storage;
     this.settings = settings;
+    this.replace1 = new RegExp(this.settings.idsrv2.mailToId.arg1);
+    this.replace2 = this.settings.idsrv2.mailToId.arg2;
   }
 
   createIdsFromEMail(email: string) {
@@ -22,7 +26,7 @@ export class Idsrv2PostGAccountGen implements PostGAccountGen {
 if (email==="ksaito@do-johodai.ac.jp") {
     idsrv2Id = "f200088071"; // 自分だけテスト
 } else {
-    idsrv2Id = email.replace(this.settings.idsrv2.mailToId.arg1,this.settings.idsrv2.mailToId.arg2);
+    idsrv2Id = email.replace(this.replace1,this.replace2);
     if (email === idsrv2Id)
       throw new Error('Idsrv2PostGAccountGen: could not get idsrv2Id from email. email='+email);
 }
