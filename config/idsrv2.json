@@ -141,7 +141,8 @@
       "idsrv2Storage": { "@id": "urn:idsrv2:core:Idsrv2Storage" },
       "webIdStore": { "@id": "urn:solid-server:default:WebIdStore" },
       "googleStore": { "@id": "urn:cga:core:GoogleStore" },
-      "settings": { "@id": "urn:idsrv2:core:Idsrv2Settings" }
+      "settings": { "@id": "urn:idsrv2:core:Idsrv2Settings" },
+      "aIndexedStorage": { "@id": "urn:solid-server:default:IndexedStorage" }
     },
     {
       "comment": "上のIdsrv2AdminHandlerのルーティングを設定する。",

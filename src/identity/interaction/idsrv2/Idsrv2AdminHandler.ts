@@ -9,6 +9,8 @@ import { JsonRepresentation } from '@solid/community-server';
 import { GoogleStore } from 'css-google-auth';
 import { Idsrv2Data } from './Idsrv2ProfileHandler';
 import { Idsrv2Settings } from '../../../Idsrv2Settings';
+import { IndexedStorage } from '@solid/community-server';
+import { ACCOUNT_TYPE } from '@solid/community-server';
 
 type OutType = { output: string };
 
@@ -24,6 +26,9 @@ export interface Idsrv2AdminHandlerArgs {
   webIdStore: WebIdStore;
   googleStore: GoogleStore;
   settings: Idsrv2Settings;
+  // 以下はたぶん"urn:solid-server:default:IndexedStorage"で取り出せば
+  // AccountStoreの中で実際に使われてるstorageになるはず。
+  aIndexedStorage: IndexedStorage<Record<string, never>>;
 }
 
 /* 管理者用API */
@@ -34,6 +39,7 @@ export class Idsrv2AdminHandler extends JsonInteractionHandler {
   private readonly webIdStore: WebIdStore;
   private readonly googleStore: GoogleStore;
   private readonly settings: Idsrv2Settings;
+  private readonly aIndexedStorage: IndexedStorage<Record<string, never>>;
 
   public constructor(args: Idsrv2AdminHandlerArgs) {
     super();
@@ -43,6 +49,7 @@ export class Idsrv2AdminHandler extends JsonInteractionHandler {
     this.webIdStore = args.webIdStore;
     this.googleStore = args.googleStore;
     this.settings = args.settings;
+    this.aIndexedStorage = args.aIndexedStorage;
   }
 
   // この方法で権限チェックするのではなくWebACLの仕組みで権限設定する方法に
@@ -102,14 +109,14 @@ export class Idsrv2AdminHandler extends JsonInteractionHandler {
   }
 
   async delAccount(data: any) {
+console.log("GAHA: ===========================", this.aIndexedStorage);
     const idsrv2 = await this.idsrv2Storage.get(data);
     if (idsrv2) {
       const {idsrv2Id, accountId, googleId} = idsrv2;
       await this.idsrv2Storage.delete(idsrv2Id);
+      await this.aIndexedStorage.delete(ACCOUNT_TYPE,accountId);
 /*
-      //await this.accountStore.... // 消し方わからない
-      await this.accountStore.storage.delete(this.accountStore.storage.type,accountId)
-*/
+
       const googleEntry = await this.googleStore.findByGoogleSub(googleId);
       if (googleEntry) {
         this.googleStore.delete(googleEntry.id);
@@ -120,6 +127,7 @@ export class Idsrv2AdminHandler extends JsonInteractionHandler {
       webIdEntries.forEach(async webIdEntry => {
         await this.webIdStore.delete(webIdEntry.id);
       });
+*/
       return 'ok,accountId='+accountId+',googleId='+googleId;
     } else {
       return 'error,account not found';

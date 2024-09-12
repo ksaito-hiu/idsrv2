@@ -1,0 +1,11 @@
+@prefix : <#>.
+@prefix acl: <http://www.w3.org/ns/auth/acl#>.
+@prefix foaf: <http://xmlns.com/foaf/0.1/>.
+@prefix dir: <./>.
+
+:JustRead
+    a acl:Authorization;
+    acl:agentClass  foaf:Agent;
+    acl:accessTo    dir:;
+    acl:mode        acl:Read.
+
