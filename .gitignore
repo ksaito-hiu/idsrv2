@@ -2,6 +2,7 @@ data
 dist
 node_modules
 idsrv2-config.json
+config/idsrv2.json
 settings/idsrv2.json
 settings/admin
 run.idsrv2.sh
