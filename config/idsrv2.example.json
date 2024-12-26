@@ -44,6 +44,7 @@
         "cga:config/identity/handler/routing/google/create.json",
         "cga:config/identity/handler/routing/google/login.json",
         "cga:config/identity/handler/routing/google/register.json",
+        "cga:config/identity/handler/routing/google/sub.json",
         "cga:config/identity/handler/routing/google/temporary.json",
       "cga:config/identity/handler/storage/google.json"
   ],
