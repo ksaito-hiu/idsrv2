@@ -31,7 +31,7 @@ if (email==="ksaito@do-johodai.ac.jp") {
       throw new Error('Idsrv2PostGAccountGen: could not get idsrv2Id from email. email='+email);
 }
     return {
-      webId: this.baseUrl+"/"+this.settings.idsrv2.profile_directory+"/"+idsrv2Id+'#me',
+      webId: this.baseUrl+"/"+this.settings.idsrv2.profile_directory+"/"+idsrv2Id,
       idsrv2Id
     };
   }

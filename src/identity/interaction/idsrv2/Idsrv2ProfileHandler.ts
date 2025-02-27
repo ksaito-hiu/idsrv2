@@ -14,10 +14,10 @@ const profileTemplate = `@prefix foaf: <http://xmlns.com/foaf/0.1/>.
 @prefix solid: <http://www.w3.org/ns/solid/terms#>.
 
 <BASE_URL_TEMPLATE/PROF_DIR_TEMPLATE/IDSRV2_ID_TEMPLATE> a foaf:PersonalProfileDocument;
-    foaf:maker <#me>;
-    foaf:primaryTopic <#me>.
+    foaf:maker <>;
+    foaf:primaryTopic <>.
 
-<#me> a foaf:Person;
+<> a foaf:Person;
     solid:oidcIssuer <BASE_URL_TEMPLATE/>;
     <http://www.w3.org/ns/pim/space#preferencesFile> <BASE_URL_TEMPLATE/PROF_DIR_TEMPLATE/IDSRV2_ID_TEMPLATEprefs.ttl>.
 `;

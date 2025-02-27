@@ -102,7 +102,7 @@ export class Idsrv2AdminHandler extends JsonInteractionHandler {
     const [idsrv2Id,googleSub] = data.split(',');
     const accountId = await this.accountStore.create();
     const googleId = await this.googleStore.create(googleSub, accountId); // ダブリチェックあり
-    const webId = this.baseUrl + 'people/' + idsrv2Id + '#me';
+    const webId = this.baseUrl + 'people/' + idsrv2Id;
     const widIdId = await this.webIdStore.create(webId, accountId);
     await this.idsrv2Storage.set(idsrv2Id, {idsrv2Id, accountId, googleId: googleSub});
     return 'ok,accountId='+accountId+',googleId='+googleId+',';
@@ -160,7 +160,7 @@ console.log("GAHA: ===========================", this.aIndexedStorage);
 console.log("GAHA3 !!!!!!!!: idsrv2Id="+idsrv2Id+", googleSub="+googleSub);
       const accountId = await this.accountStore.create();
       const googleId = await this.googleStore.create(googleSub, accountId); // ダブリチェックあり
-      const webId = this.baseUrl + 'people/' + idsrv2Id + '#me';
+      const webId = this.baseUrl + 'people/' + idsrv2Id;
       const widIdId = await this.webIdStore.create(webId, accountId);
       await this.idsrv2Storage.set(idsrv2Id, {idsrv2Id, accountId, googleId: googleSub});
     }

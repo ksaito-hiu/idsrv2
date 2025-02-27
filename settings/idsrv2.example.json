@@ -8,6 +8,6 @@
     "arg2": "id-$1"
   },
   "adminWebIds": [
-    "https://id.mydomain.com/people/u000000001#me"
+    "https://id.mydomain.com/people/u000000001"
   ]
 }
