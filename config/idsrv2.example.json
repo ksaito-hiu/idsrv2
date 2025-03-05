@@ -366,7 +366,7 @@
               "enabled": true
             },
             "registration": {
-              "enabled": true
+              "enabled": false
             },
             "revocation": {
               "enabled": true
