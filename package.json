@@ -1,6 +1,6 @@
 {
   "name": "idsrv2",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "A Solid OIDC authentication server appropriating google accounts for authentication.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
